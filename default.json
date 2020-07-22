@@ -1,0 +1,47 @@
+[
+    {
+        "Id": "1",
+        "Text": "Main Boss",
+        "LeftDivid": "2",
+        "Top": "40",
+        "Width": "150",
+        "Height": "100",
+        "Parent": "0"
+    },
+    {
+        "Id": "2",
+        "Text": "SubBoss 1",
+        "LeftDivid": "2.6",
+        "Top": "180",
+        "Width": "150",
+        "Height": "100",
+        "Parent": "1"
+    },
+    {
+        "Id": "3",
+        "Text": "SubBoss 2",
+        "LeftDivid": "1.8",
+        "Top": "180",
+        "Width": "150",
+        "Height": "100",
+        "Parent": "1"
+    },
+    {
+        "Id": "4",
+        "Text": "MiniBoss1",
+        "LeftDivid": "2.8",
+        "Top": "300",
+        "Width": "150",
+        "Height": "100",
+        "Parent": "2"
+    },
+    {
+        "Id": "5",
+        "Text": "MiniBoss2",
+        "LeftDivid": "1.6",
+        "Top": "300",
+        "Width": "150",
+        "Height": "100",
+        "Parent": "3"
+    }
+]

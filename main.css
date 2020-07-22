@@ -1,0 +1,22 @@
+canvas{
+    /* border: 1px solid black;  */
+}
+.left-half{
+  
+   /* border: 1px solid pink; */
+   height: 600px;
+  
+}
+.right-half{
+ 
+   /* border: 1px solid green; */
+
+}
+
+.theader-background{
+   background-color: #428BCA;
+}
+
+.white-text{
+   color: white;
+}
