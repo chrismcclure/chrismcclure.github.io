@@ -78,8 +78,6 @@ function AddDataToTable(issues){
     }
     //Update the date range
     var dates = issuesOnScreen.sort((a, b) => b.dateObject - a.dateObject);
-    console.log(issuesOnScreen);
-    console.log(dates);
     var outPut = "No issues";
     if(dates.length > 0 ) {
         outPut = FormatDate(dates[dates.length - 1].dateObject) + " to " + FormatDate(dates[0].dateObject);
@@ -139,7 +137,7 @@ function AddDataToIssuesRecords(issues){
         var today = new Date();    
         today.setDate(today.getDate() + alterDate);
         var date = FormatDate(today);
-        issues[i].date = date;    
+        issues[i].date = date;
         issues[i].dateObject = today;    
     }   
 }
@@ -147,6 +145,12 @@ function AddDataToIssuesRecords(issues){
 function FormatDate(date){
   return  date.getMonth()+'-'+date.getDate()  +'-'+ date.getFullYear();
 }
+
+//Button clicks
+var fullTableButton = document.getElementById('open-issue');
+fullTableButton.addEventListener('click', function (event) {
+    window.open("issues.html?mainNode="+overviewNode.Id, "_blank");
+});
 
 //setting up the click for canvas. 
 //Might have double declarations in here

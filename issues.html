@@ -15,15 +15,12 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.2.0/papaparse.js"></script>
     
-    <title>Assitant To The Manager</title>
+    <title>Issues</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
 </head>
 
 <body>
-
     <div class="container-fluid">
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
@@ -45,13 +42,10 @@
                 </ul>
             </div>
         </nav>       
-        <div class="row">
-       <div class="col-md-6  col-sm-12 left-half" id="parent"> 
-            <Canvas id="myCanvas"></Canvas>
-        </div>
-        <div class=" col-md-6 col-sm-12 right-half">          
+        <div class="row">       
+        <div class=" col-md-12 col-sm-12 right-half">          
                 <h2><span id="title-name">Temp</span> Issues</h2> 
-                <p>Date Range <span id="date-range"></span>.  <button class="btn btn-info" id="open-issue">Open Full Table</button></p>        
+                <p>Date Range <span id="date-range"></span></p>      
                 <table class="table table-sm table-bordered">
                     <thead class="theader-background white-text">
                     <tr>
@@ -69,7 +63,7 @@
 
         </div>        
     </div>
-    <script src="main.js"></script>
+    <script src="issues.js"></script>
 </body>
 
 </html>
