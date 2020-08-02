@@ -1,0 +1,16 @@
+.left-half{  
+   /* border: 1px solid pink; */
+   height: 600px;  
+}
+
+.theader-background{
+   background-color: #428BCA;
+}
+
+.white-text{
+   color: white;
+}
+
+.zero-padding{
+   padding: 0 !important;
+}

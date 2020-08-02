@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style/main.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.2.0/papaparse.js"></script>
+
+    <title>Issues</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">Assistant To The Manager</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <form class="navbar-form navbar-left" action="/action_page.php">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search">
+                            </div>
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </form>
+                    </li>
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="form-group  col-md-4 col-sm-12">
+                <h2><span id="Issue-Name">Create Issue</span> </h2>
+                <p><label for="issue-title">Issue Type:</label>     </p>           
+               <label class="radio-inline"><input type="radio" name="issueType" value="report" id="direct-report" checked>Direct Report</label>
+                <label class="radio-inline"><input type="radio" name="issueType"id="self" value="self" >Self</label>                
+                <label class="radio-inline"><input type="radio" name="issueType" id="employee" value="employee">Another Employee</label>
+                <label class="radio-inline"><input type="radio" name="issueType" id="leader" value="leader">Leader</label>   
+                <p></p>                             
+                <label for="issue-title">Title:</label>
+                <input type="text" class="form-control" id="issue-title">
+                <label for="issue-description">Description:</label>
+                <textarea class="form-control" rows="5" id="issue-description"></textarea>
+                <div id="list-holder">
+                    <label for="employee-list">Employee Involved:</label>
+                    <input type="text" class="form-control" id="employee-list" list="employees">
+                    <datalist id="employees">
+                    </datalist>
+                </div>
+                <p></p>
+               
+                <p class="checkbox-holder"><label for="visible">Leader To Notify</label></p>
+                <div class="checkbox-holder">
+                    <label><input type="checkbox" name="leader" value="Austin Lovejoy" checked="true" >Austin Lovejoy - Senior VP</label>
+                </div>
+                <div class="checkbox-holder">
+                    <label><input type="checkbox" name="leader" value="Kevin Brockman">Kevin Brockman - President</label>
+                </div>
+                <p><label for="visible">Issue Visibility</label></p>
+                <label class="radio-inline"><input type="radio" name="visible" value="standard" checked>Standard</label>
+                <label class="radio-inline"><input type="radio" name="visible" value="private">Private</label>
+                <p></p>
+                <button class="btn btn-success" id="create-issue-button">Create Issue</button>
+            </div>
+        </div>
+    </div>
+    <script src="javascript/createIssue.js"></script>
+</body>
+
+</html>

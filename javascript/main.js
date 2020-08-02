@@ -1,8 +1,11 @@
 var redCircle = '#ffc1cc';
 var greenCircle = '#98ff98';
+var directReportKey = 'directReports';
 var white = 'white';
 var black = 'black';
 var grey = '#E8E8E8';
+var maxIdKey = 'MaxId';
+var maxIdFromFileKey = 'MaxIdFromFile';
 var selectedItem = null;
 var selectedIndex = -1;
 var mouseDown = false;
@@ -15,8 +18,8 @@ var offsetX = canvasOffset.left + window.scrollX;
 var offsetY = canvasOffset.top + window.scrollY;
 var startX;
 var startY;
-var csvFilePath = 'default.csv';
-var issuesFile = 'issues.csv';
+var csvFilePath = 'files/default.csv';
+var issuesFile = 'files/issues.csv';
 var nodes;
 var issues;
 var originalIssues = [];
@@ -32,14 +35,14 @@ var previousNodesTempHolder = [];
 var originalViewNodes = [];
 
 ///Parse the files
-Papa.parse(csvFilePath, {
+Papa.parse(csvFilePath+"?_="+ (new Date).getTime(), {
     header: true,
     download: true,
     dynamicTyping: true,
     complete: function (results) {
-    nodes = results.data;    
-        if(nodes.length > 0){
-            console.log('Its loaded');
+        nodes = results.data;
+        if (nodes.length > 0) {
+
             for (i = 0; i < nodes.length; i++) {
                 nodes[i].width = 160;
                 nodes[i].height = 70;
@@ -47,54 +50,133 @@ Papa.parse(csvFilePath, {
             SetHomepageDetails();
             tempNewNodes = [];
             tempNewNodes.push(nodes[0]);
-            GetChild(nodes[0], 1);           
+            GetChild(nodes[0], 1);
             nodes = tempNewNodes;
+            StoreDirectReports();
             SetDefaultLayout();
             loadIssues();
             draw(false);
         }
-        originalViewNodes = nodes; 
+        originalViewNodes = nodes;
     }
 });
 
-function loadIssues(){
-    Papa.parse(issuesFile, {
+function loadIssues() {
+    Papa.parse(issuesFile+"?_="+ (new Date).getTime(), {
         header: true,
         download: true,
         dynamicTyping: true,
         complete: function (results) {
-        issues = results.data; 
-        originalIssues = results.data;   
-        AddDataToIssuesRecords(issues);    
-        AddDataToTable(issues);
+            issues = results.data;
+            originalIssues = results.data;
+            PullFromLocalStorage();
+            AddDataToIssuesRecords(issues);
+            AddDataToTable(issues);
+            AddHighestNumberToLocalStorage();
         }
     });
 }
 
-function AddDataToTable(issues){
+function StoreDirectReports() {
+    var directReports = nodes.filter(x => x.parent == 1);
+    localStorage.setItem(directReportKey, JSON.stringify(directReports));
+};
+
+function PullFromLocalStorage() {
+    var maxId = GetCurrentMaxId();
+    var maxFileId = GetCurrentMaxFileId();
+    if (maxId > maxFileId) {
+        for (let index = maxFileId + 1; index < maxId + 1; index++) {
+            var issue = JSON.parse(localStorage.getItem(index));
+            var issuestoAdd = {};
+            issuestoAdd.id = issue.id;
+            issuestoAdd.title = issue.title;
+            issuestoAdd.owner = issue.owner;
+            issuestoAdd.emp = issue.emp;
+            issuestoAdd.description = issue.description;
+            issuestoAdd.type = issue.type;
+            issuestoAdd.visibility = issue.visibility;
+            issuestoAdd.leaders = issue.leaders;
+            issuestoAdd.open = false;
+            issuestoAdd.inputer = issue.inputer;
+            issues.push(issuestoAdd);
+        }
+    }
+    else {
+        console.log('nothing cool in here :(');
+    }
+}
+
+var clearButton = document.getElementById('clear-storage');
+clearButton.addEventListener('click', function (event) {
+    localStorage.clear();
+    location.reload();
+});
+
+
+function AddHighestNumberToLocalStorage() {
+    var maxId = GetCurrentMaxId();
+    var highestNumber = Math.max.apply(Math, issues.map(function (o) { return o.id; }));
+    if (maxId === undefined || maxId === 'null' || maxId === 'NaN' || maxId == null) {
+        localStorage.setItem(maxIdKey, highestNumber);
+    }
+    var maxIdFromFile = localStorage.getItem(maxIdFromFileKey);
+    if (maxIdFromFile === 'null' || maxIdFromFile == null || maxIdFromFile === undefined) {
+        localStorage.setItem(maxIdFromFileKey, highestNumber);
+    }
+}
+
+function GetCurrentMaxId() {
+    var maxId = localStorage.getItem(maxIdKey);
+    if (maxId === 'null' || maxId === null || maxId === 'NaN') {
+        return maxId;
+    }
+    return parseInt(maxId);
+}
+
+function GetCurrentMaxFileId() {
+    var maxId = localStorage.getItem(maxIdFromFileKey);
+    if (maxId === 'null' || maxId === null) {
+        return maxId;
+    }
+    return parseInt(maxId);
+}
+
+function AddIssueToLocalStorage(issue) {
+    var currentId = JSON.stringify(localStorage.getItem(issues.id));
+    if (currentId !== 'null') {
+        
+    }
+    else {
+        localStorage.setItem(issue.id, JSON.stringify(issue))
+    }
+}
+
+function AddDataToTable(issues) {
     issuesOnScreen = [];
     for (let i = 0; i < issues.length; i++) {
-       AddDataToRowToTable(issues[i]);        
+        AddDataToRowToTable(issues[i]);
+        AddIssueToLocalStorage(issues[i]);
     }
     //Update the date range
     var dates = issuesOnScreen.sort((a, b) => b.dateObject - a.dateObject);
     var outPut = "No issues";
-    if(dates.length > 0 ) {
+    if (dates.length > 0) {
         outPut = FormatDate(dates[dates.length - 1].dateObject) + " to " + FormatDate(dates[0].dateObject);
-    } 
+    }
     var dateRangeElem = document.getElementById('date-range');
     dateRangeElem.innerHTML = outPut;
 }
 
-function UpdateTableTitle(node){
+function UpdateTableTitle(node) {
     var titleSpan = document.getElementById('title-name');
     titleSpan.innerText = node.Name;
     //Need some way to get all the children then make sure they are included in the issues
 }
 
-function AddDataToRowToTable(issue) {    
-    var issueOwner = nodes.filter(x => x.Id == issue.owner); 
-    if(issueOwner.length == 0){
+function AddDataToRowToTable(issue) {
+    var issueOwner = nodes.filter(x => x.Id == issue.owner);
+    if (issueOwner.length == 0) {
         return;
     }
     //This array is cleared and updated in AddDateToTable  method
@@ -111,8 +193,23 @@ function AddDataToRowToTable(issue) {
     var textnode1 = document.createTextNode(owner);
     var textnode2 = document.createTextNode(issue.title);
     var textnode3 = document.createTextNode(issue.date);
-    var textnode4 = document.createTextNode(issue.emp);
-    var textnode5 = '<button class="btn btn-success">Open Issue</button';
+    var textnode4;
+    if(issue.status === null || issue.status === undefined){
+         textnode4 = document.createTextNode("Resolved");
+    } 
+    else{
+        textnode4= document.createTextNode(issue.status);
+    }
+     
+    var buttonHtml = '';
+        console.log(issue);
+    if (issue.open) {
+        buttonHtml = '<a href="issue.html?Id=' + issue.id + '" class="btn btn-success">Open Issue</a>';
+    }
+    else {
+        buttonHtml = '<a class="btn btn-success disabled">Open Issue</a>';
+    }
+    var textnode5 = buttonHtml;
     cell1.appendChild(textnode1);
     cell2.appendChild(textnode2);
     cell3.appendChild(textnode3);
@@ -126,30 +223,30 @@ function AddDataToRowToTable(issue) {
     tBodyElem.appendChild(row);
 }
 
-function AddDataToIssuesRecords(issues){
-   var startingCount = 30;
+function AddDataToIssuesRecords(issues) {
+    var startingCount = 30;
     for (let i = 0; i < issues.length; i++) {
 
         var alterDate = startingCount + i;
-        if(i > 7){
+        if (i > 7) {
             startingCount = startingCount - i;
         }
-        var today = new Date();    
+        var today = new Date();
         today.setDate(today.getDate() + alterDate);
         var date = FormatDate(today);
         issues[i].date = date;
-        issues[i].dateObject = today;    
-    }   
+        issues[i].dateObject = today;
+    }
 }
 
-function FormatDate(date){
-  return  date.getMonth()+'-'+date.getDate()  +'-'+ date.getFullYear();
+function FormatDate(date) {
+    return date.getMonth() + '-' + date.getDate() + '-' + date.getFullYear();
 }
 
 //Button clicks
 var fullTableButton = document.getElementById('open-issue');
 fullTableButton.addEventListener('click', function (event) {
-    window.open("issues.html?mainNode="+overviewNode.Id, "_blank");
+    window.open("issuessList.html?mainNode=" + overviewNode.Id, "_top");
 });
 
 //setting up the click for canvas. 
@@ -159,45 +256,45 @@ var elem = document.getElementById('myCanvas'),
     elemLeft = elem.offsetLeft,
     elemTop = elem.offsetTop,
     context = elem.getContext('2d');
-   
+
 
 //MEthods for reseting or deciding what nodes to display
-function SetHomepageDetails(node){
-    if(node === undefined || node === null){
+function SetHomepageDetails(node) {
+    if (node === undefined || node === null) {
         //Might be able to get rid of this
         //TODO test without 
-        var lowestParent = Math.min.apply(Math, nodes.map(function(o) { return o.parent; }))
+        var lowestParent = Math.min.apply(Math, nodes.map(function (o) { return o.parent; }))
         overviewNode = nodes.find(o => o.parent === lowestParent);
     }
-    else{
+    else {
         overviewNode = node;
-    }         
+    }
     UpdateTableTitle(overviewNode)
 }
 
-function UpdateTableRows(){
+function UpdateTableRows() {
     var tempIssuesHolder = [];
     var tBodyElem = document.getElementById("table-data");
-    tBodyElem.innerHTML = ''; 
-    for (let index = 0; index < nodes.length; index++) {     
-        var issuesPerUser = originalIssues.filter(x => x.owner == nodes[index].Id);        
-        if (issuesPerUser.length > 0){
+    tBodyElem.innerHTML = '';
+    for (let index = 0; index < nodes.length; index++) {
+        var issuesPerUser = originalIssues.filter(x => x.owner == nodes[index].Id);
+        if (issuesPerUser.length > 0) {
             for (let i = 0; i < issuesPerUser.length; i++) {
-                tempIssuesHolder.push(issuesPerUser[i]);                
+                tempIssuesHolder.push(issuesPerUser[i]);
             }
-        }        
+        }
     }
-    issue = tempIssuesHolder; 
-    AddDataToTable(issues);         
+    issue = tempIssuesHolder;
+    AddDataToTable(issues);
 }
 
 function UpdateNodesOnZoom(doubleClickedNode) {
     tempNewNodes = [];
     previousNodes = nodes;
     SetHomepageDetails(doubleClickedNode);
-    GetChild(doubleClickedNode, 1);    
+    GetChild(doubleClickedNode, 1);
     nodes = [];
-    nodes = tempNewNodes;  
+    nodes = tempNewNodes;
     SetDefaultLayout();
     UpdateTableRows();
     draw(false);
@@ -211,13 +308,13 @@ function GetChild(element, level) {
     if (children.length === 0) {
         return;
     }
-    for (let i = 0; i < children.length; i++) {       
+    for (let i = 0; i < children.length; i++) {
 
         GetChild(children[i], level);
     }
 }
 
-function ResetToHome(){
+function ResetToHome() {
     nodes = originalViewNodes
     SetHomepageDetails();
     tempNewNodes = [];
@@ -268,25 +365,24 @@ function SetDefaultLayout() {
     }
     //Honestly this kind of sucks, but works for the prototype
     for (let i = 1; i < 5; i++) {
-      var levelNodes = nodes.filter(x => x.level == i);     
-      if(levelNodes.length == 2 && ((levelNodes[0].parent != levelNodes[1].parent) || i == 2)){
-          console.log('making changes');
-        AdjustWidth(levelNodes[0].Id, canvas.width / 4)
-        AdjustWidth(levelNodes[1].Id, canvas.width / 1.9)
-      }        
+        var levelNodes = nodes.filter(x => x.level == i);
+        if (levelNodes.length == 2 && ((levelNodes[0].parent != levelNodes[1].parent) || i == 2)) {
+            AdjustWidth(levelNodes[0].Id, canvas.width / 4)
+            AdjustWidth(levelNodes[1].Id, canvas.width / 1.9)
+        }
     }
 }
 
-function AdjustWidth(Id, left){
+function AdjustWidth(Id, left) {
     for (let index = 0; index < nodes.length; index++) {
-       if(nodes[index].Id == Id){
-           nodes[index].left = left;
-       }        
+        if (nodes[index].Id == Id) {
+            nodes[index].left = left;
+        }
     }
 }
 
 //specfiics for a elemtns and returns boolean
-function textHittest(x, y, node) {      
+function textHittest(x, y, node) {
     return (y > node.top && y < node.top + node.height && x > node.left && x < node.left + node.width);
 }
 
@@ -304,7 +400,7 @@ elem.addEventListener('dblclick', function (event) {
     });
 }, false);
 
-window.addEventListener('resize', function (event) {    
+window.addEventListener('resize', function (event) {
     canvas.width = parent.offsetWidth;
     canvas.height = parent.offsetHeight;
     draw(true);
@@ -340,8 +436,8 @@ elem.addEventListener('mouseout', function (event) {
 // by that distance
 function handleMouseMove(e) {
     if (selectedItem === null) {
-        console.log('oh no, its null');       
-            return;        
+        console.log('oh no, its null');
+        return;
     }
     e.preventDefault();
     mouseX = parseInt(e.clientX - offsetX);
@@ -367,28 +463,27 @@ function handleMouseDown(e) {
     // Put your mousedown stuff here  
     for (i = 0; i < nodes.length; i++) {
         if (textHittest(startX, startY, nodes[i])) {
-           // console.log("it's true!")        
             selectedItem = nodes[i];
-            selectedIndex = i;        
+            selectedIndex = i;
             return
-        }   
+        }
     }
 
-    if(textHittest(startX, startY, homeViewButton)){
+    if (textHittest(startX, startY, homeViewButton)) {
         ResetToHome();
-    }    
+    }
 
-    if(textHittest(startX, startY, backButton)){
+    if (textHittest(startX, startY, backButton)) {
         ResetToPreviousNodes();
-    }  
+    }
 }
 
-///The DRAWING MATHOD!!!
+///The DRAWING METHOD!!!
 function draw(setLeft) {
     if (nodes == null || nodes === undefined) {
         console.log('Not loaded yet');
         return;
-    } 
+    }
 
     //Clear everything
     c.clearRect(0, 0, canvas.width, canvas.height);
@@ -398,11 +493,11 @@ function draw(setLeft) {
     c.fillStyle = black;
     var viewName = overviewNode.Name + " Organization View"
     c.fillText(viewName, canvas.width / 3.2, 25)
-    
+
     //Set the legend on the top left
     c.font = "16px Calibri";
     //Green Circle
-    c.arc(40,20, 12, 0, Math.PI * 2, false);
+    c.arc(40, 20, 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = greenCircle;
     c.fill();
@@ -410,7 +505,7 @@ function draw(setLeft) {
     c.beginPath();
 
     //Red Circle
-    c.arc(40,50, 12, 0, Math.PI * 2, false);
+    c.arc(40, 50, 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = redCircle;
     c.fill();
@@ -423,44 +518,44 @@ function draw(setLeft) {
 
     //Create objects for the buttons
     homeViewButton = {
-        left: 30, 
+        left: 30,
         top: 80,
         width: 100,
-        height:30
-    };    
+        height: 30
+    };
     backButton = {
-        left: 30, 
+        left: 30,
         top: 120,
         width: 100,
-        height:30
+        height: 30
     };
-     
+
     //TODO figure out how to make buttons betters
     //Create Buttons
     c.strokeStyle = black;
-    c.strokeRect(homeViewButton.left, homeViewButton.top, homeViewButton.width, homeViewButton.height);    
-    c.rect(homeViewButton.left, homeViewButton.top, homeViewButton.width, homeViewButton.height);     
+    c.strokeRect(homeViewButton.left, homeViewButton.top, homeViewButton.width, homeViewButton.height);
+    c.rect(homeViewButton.left, homeViewButton.top, homeViewButton.width, homeViewButton.height);
     c.fillStyle = buttonColorBlue;
-    c.fill();    
+    c.fill();
     c.beginPath();
     c.fillStyle = white;
     c.fillText("Home View", homeViewButton.left + 15, homeViewButton.top + 19)
     c.beginPath();
     //Create Buttons
     c.strokeStyle = black;
-    c.strokeRect(backButton.left, backButton.top, backButton.width, backButton.height);   
-    c.rect(backButton.left, backButton.top, backButton.width, backButton.height);    
+    c.strokeRect(backButton.left, backButton.top, backButton.width, backButton.height);
+    c.rect(backButton.left, backButton.top, backButton.width, backButton.height);
     c.fillStyle = buttonColorGreen;
-    c.fill();    
+    c.fill();
     c.fillStyle = white;
     c.fillText("Previous", backButton.left + 15, backButton.top + 19)
     c.beginPath();
 
     //make centers for the rectangle
     for (i = 0; i < nodes.length; i++) {
-        if (nodes[i].left === undefined || setLeft){
+        if (nodes[i].left === undefined || setLeft) {
             nodes[i].left = (canvas.width / nodes[i].LeftDivid)
-        }           
+        }
 
         var center = { x: (nodes[i].left + (nodes[i].width / 2)), y: (nodes[i].top + (nodes[i].height / 2)) }
         nodes[i].x = center.x;
@@ -482,18 +577,18 @@ function draw(setLeft) {
 
     //Draw the rectangles and circles
     for (i = 0; i < nodes.length; i++) {
-        var tempRectangle = nodes[i];       
+        var tempRectangle = nodes[i];
         //Draw the outside rectangle
         c.beginPath();
         c.strokeStyle = black;
-        c.strokeRect(tempRectangle.left, tempRectangle.top, tempRectangle.width, tempRectangle.height);    
+        c.strokeRect(tempRectangle.left, tempRectangle.top, tempRectangle.width, tempRectangle.height);
         c.rect(tempRectangle.left, tempRectangle.top, tempRectangle.width, tempRectangle.height);
         c.fillStyle = grey;
         c.fill();
         //Commented this out and it looks good, not sure why
         //c.fillStyle = black;
         //c.stroke();
-       
+
         //Draw the red circle  otherwise known as issues
         //c.moveTo(tempRectangle.x -40, tempRectangle.y + 10);
         c.beginPath();
@@ -505,13 +600,13 @@ function draw(setLeft) {
         c.beginPath();
         c.fillStyle = black;
         var issuesText = new String(tempRectangle.issues);
-        var issueResolvedY =  tempRectangle.y + 20;
-        if (issuesText.length == 2){
+        var issueResolvedY = tempRectangle.y + 20;
+        if (issuesText.length == 2) {
             c.fillText(tempRectangle.issues, tempRectangle.x - 74, issueResolvedY)
         }
-        if (issuesText.length == 1){
+        if (issuesText.length == 1) {
             c.fillText(tempRectangle.issues, tempRectangle.x - 69, issueResolvedY)
-        }  
+        }
         c.beginPath();
 
         //Draw the green circle otherwise known as resolved
@@ -527,12 +622,12 @@ function draw(setLeft) {
         //Draw the number
         c.fillStyle = black;
         var resolvedText = new String(tempRectangle.resolved);
-        if (resolvedText.length == 2){
+        if (resolvedText.length == 2) {
             c.fillText(tempRectangle.resolved, tempRectangle.x - 45, issueResolvedY)
         }
-        if (resolvedText.length == 1){
+        if (resolvedText.length == 1) {
             c.fillText(tempRectangle.resolved, tempRectangle.x - 40, issueResolvedY)
-        }  
+        }
         c.beginPath();
         c.fillStyle = 'black';
         c.fillText(nodes[i].Name, nodes[i].x - 75, nodes[i].y - 22);

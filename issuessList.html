@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" type="text/css" href="style/main.css">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -25,10 +25,10 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Assitant To The Manager</a>
+                    <a class="navbar-brand" href="index.html">Assistant To The Manager</a>
                 </div>    
                 <ul class="nav navbar-nav navbar-right">
-                    <li><button class="btn btn-primary navbar-btn">Create Issue</button></li>
+                    <li><a href="createIssue.html" class="zero-padding"><button class="btn btn-primary navbar-btn">Create Issue</button></a></li>
                     <li>
                         <form class="navbar-form navbar-left" action="/action_page.php">
                             <div class="form-group">
@@ -51,8 +51,11 @@
                     <tr>
                       <th>Issue Owner</th>
                       <th>Title</th>
+                      <th>Status</th>
+                      <th>Description</th>
                       <th>Date</th>
                       <th>Employee</th>
+                      <th>Creator</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -63,7 +66,7 @@
 
         </div>        
     </div>
-    <script src="issues.js"></script>
+    <script src="javascript/issuessList.js"></script>
 </body>
 
 </html>

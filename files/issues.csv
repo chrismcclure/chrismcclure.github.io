@@ -1,0 +1,8 @@
+id,title,owner,emp,description,open,inputer,status
+1,Staffing Problems,1,Tina Maggino,3 full-time critical shifts are open and must be filled fast.  Use temp service?,true,Stacy Bartman (Vice President),Waiting for Response
+2,Harrasment Issue,2,Millie Van Houten,,false,,,
+3,Employee Late,6,Kayla Krabappel,,false,,,
+4,Wrong Patient Imaged,7,Jim Wiggim,Wrong patient was taken for abdomen/pelvis with contrast CT during night shift,true,Mandy Hibert (ER Nurse),Waiting for Resolution
+5,Patient Complaint,3,Dan Skinner,,false,,
+6,Incorrect Charges,5,Jenny Moleman,,false,,
+7,Employee No Show,4,Lexi Brockman,,false,,
