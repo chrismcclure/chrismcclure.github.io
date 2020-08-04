@@ -314,41 +314,13 @@ function GetChild(element, level) {
     }
 }
 
-function ResetToHome() {
-    nodes = originalViewNodes
-    SetHomepageDetails();
-    tempNewNodes = [];
-    GetChild(nodes[0], 1);
-    nodes = tempNewNodes;
-    SetDefaultLayout();
-    UpdateTableRows();
-    draw(false);
-}
-
-function ResetToPreviousNodes() {
-    if (previousNodes.length === 0) {
-        console.log('There are no previous nodes');
-        return;
-    }
-
-    previousNodesTempHolder = nodes;
-    nodes = previousNodes;
-    previousNodes = previousNodesTempHolder;
-    SetHomepageDetails();
-    tempNewNodes = [];
-    GetChild(nodes[0], 1);
-    nodes = tempNewNodes;
-    SetDefaultLayout();
-    UpdateTableRows();
-    draw(false);
-}
 
 function SetDefaultLayout() {
     for (let i = 0; i < nodes.length; i++) {
         //Right now this will work, but if it gets big figure this out
         if (nodes[i].level === 1) {
             nodes[i].top = 60;
-            nodes[i].left = canvas.width / 2.6;
+            nodes[i].left = canvas.width / 5;
         }
 
         if (nodes[i].level === 2) {
@@ -367,8 +339,8 @@ function SetDefaultLayout() {
     for (let i = 1; i < 5; i++) {
         var levelNodes = nodes.filter(x => x.level == i);
         if (levelNodes.length == 2 && ((levelNodes[0].parent != levelNodes[1].parent) || i == 2)) {
-            AdjustWidth(levelNodes[0].Id, canvas.width / 4)
-            AdjustWidth(levelNodes[1].Id, canvas.width / 1.9)
+            AdjustWidth(levelNodes[0].Id, canvas.width / 18)
+            AdjustWidth(levelNodes[1].Id, canvas.width / 2.5)
         }
     }
 }
@@ -412,13 +384,31 @@ elem.addEventListener('mousedown', function (event) {
     handleMouseDown(event);
 });
 
+elem.addEventListener('touchstart', function (event) {
+    mouseDown = true;
+    handleMouseDown(event);
+});
+
 elem.addEventListener('mousemove', function (event) {
     if (mouseDown) {
         handleMouseMove(event);
     }
 });
 
+elem.addEventListener('touchmove', function (event) {
+    if (mouseDown) {
+        handleMouseMove(event);
+    }
+});
+
 elem.addEventListener('mouseup', function (event) {
+    mouseDown = false;
+    event.preventDefault();
+    selectedItem = null;
+    selectedIndex = -1;
+});
+
+elem.addEventListener('touchend', function (event) {
     mouseDown = false;
     event.preventDefault();
     selectedItem = null;
@@ -468,15 +458,37 @@ function handleMouseDown(e) {
             return
         }
     }
-
-    if (textHittest(startX, startY, homeViewButton)) {
-        ResetToHome();
-    }
-
-    if (textHittest(startX, startY, backButton)) {
-        ResetToPreviousNodes();
-    }
 }
+
+
+var previousButton = document.getElementById('previous-view');
+previousButton.addEventListener('click', function (event){
+    
+    previousNodesTempHolder = nodes;
+    nodes = previousNodes;
+    previousNodes = previousNodesTempHolder;
+    SetHomepageDetails();
+    tempNewNodes = [];
+    GetChild(nodes[0], 1);
+    nodes = tempNewNodes;
+    SetDefaultLayout();
+    UpdateTableRows();
+    draw(false);
+});
+
+
+var homeButton = document.getElementById('home-view');
+
+homeButton.addEventListener('click',function(event){
+    nodes = originalViewNodes
+    SetHomepageDetails();
+    tempNewNodes = [];
+    GetChild(nodes[0], 1);
+    nodes = tempNewNodes;
+    SetDefaultLayout();
+    UpdateTableRows();
+    draw(false);
+});
 
 ///The DRAWING METHOD!!!
 function draw(setLeft) {
@@ -489,15 +501,15 @@ function draw(setLeft) {
     c.clearRect(0, 0, canvas.width, canvas.height);
 
     //Set the organizational name
-    c.font = "30px Calibri";
-    c.fillStyle = black;
-    var viewName = overviewNode.Name + " Organization View"
-    c.fillText(viewName, canvas.width / 3.2, 25)
+    // c.font = "30px Calibri";
+    // c.fillStyle = black;
+    // var viewName = overviewNode.Name + " Organization View"
+    // c.fillText(viewName, canvas.width / 3.2, 25)
 
     //Set the legend on the top left
     c.font = "16px Calibri";
     //Green Circle
-    c.arc(40, 20, 12, 0, Math.PI * 2, false);
+    c.arc(15, 20, 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = greenCircle;
     c.fill();
@@ -505,51 +517,51 @@ function draw(setLeft) {
     c.beginPath();
 
     //Red Circle
-    c.arc(40, 50, 12, 0, Math.PI * 2, false);
+    c.arc(160, 20, 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = redCircle;
     c.fill();
     c.stroke();
     c.beginPath();
     c.fillStyle = black;
-    c.fillText("Resolved Issues", 60, 25)
-    c.fillText("Unresolved Issues", 60, 55)
+    c.fillText("Resolved Issues", 35, 25)
+    c.fillText("Unresolved Issues", 180, 25)
     c.beginPath();
 
     //Create objects for the buttons
-    homeViewButton = {
-        left: 30,
-        top: 80,
-        width: 100,
-        height: 30
-    };
-    backButton = {
-        left: 30,
-        top: 120,
-        width: 100,
-        height: 30
-    };
+    // homeViewButton = {
+    //     left: 30,
+    //     top: 80,
+    //     width: 100,
+    //     height: 30
+    // };
+    // backButton = {
+    //     left: 30,
+    //     top: 120,
+    //     width: 100,
+    //     height: 30
+    // };
 
     //TODO figure out how to make buttons betters
     //Create Buttons
-    c.strokeStyle = black;
-    c.strokeRect(homeViewButton.left, homeViewButton.top, homeViewButton.width, homeViewButton.height);
-    c.rect(homeViewButton.left, homeViewButton.top, homeViewButton.width, homeViewButton.height);
-    c.fillStyle = buttonColorBlue;
-    c.fill();
-    c.beginPath();
-    c.fillStyle = white;
-    c.fillText("Home View", homeViewButton.left + 15, homeViewButton.top + 19)
-    c.beginPath();
+    // c.strokeStyle = black;
+    // c.strokeRect(homeViewButton.left, homeViewButton.top, homeViewButton.width, homeViewButton.height);
+    // c.rect(homeViewButton.left, homeViewButton.top, homeViewButton.width, homeViewButton.height);
+    // c.fillStyle = buttonColorBlue;
+    // c.fill();
+    // c.beginPath();
+    // c.fillStyle = white;
+    // c.fillText("Home View", homeViewButton.left + 15, homeViewButton.top + 19)
+    // c.beginPath();
     //Create Buttons
-    c.strokeStyle = black;
-    c.strokeRect(backButton.left, backButton.top, backButton.width, backButton.height);
-    c.rect(backButton.left, backButton.top, backButton.width, backButton.height);
-    c.fillStyle = buttonColorGreen;
-    c.fill();
-    c.fillStyle = white;
-    c.fillText("Previous", backButton.left + 15, backButton.top + 19)
-    c.beginPath();
+    // c.strokeStyle = black;
+    // c.strokeRect(backButton.left, backButton.top, backButton.width, backButton.height);
+    // c.rect(backButton.left, backButton.top, backButton.width, backButton.height);
+    // c.fillStyle = buttonColorGreen;
+    // c.fill();
+    // c.fillStyle = white;
+    // c.fillText("Previous", backButton.left + 15, backButton.top + 19)
+    // c.beginPath();
 
     //make centers for the rectangle
     for (i = 0; i < nodes.length; i++) {
