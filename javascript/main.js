@@ -384,10 +384,10 @@ elem.addEventListener('mousedown', function (event) {
     handleMouseDown(event);
 });
 
-elem.addEventListener('touchstart', function (event) {
-    mouseDown = true;
-    handleMouseDown(event);
-});
+// elem.addEventListener('touchstart', function (event) {
+//     mouseDown = true;
+//     handleMouseDown(event);
+// });
 
 elem.addEventListener('mousemove', function (event) {
     if (mouseDown) {
@@ -395,11 +395,11 @@ elem.addEventListener('mousemove', function (event) {
     }
 });
 
-elem.addEventListener('touchmove', function (event) {
-    if (mouseDown) {
-        handleMouseMove(event);
-    }
-});
+// elem.addEventListener('touchmove', function (event) {
+//     if (mouseDown) {
+//         handleMouseMove(event);
+//     }
+// });
 
 elem.addEventListener('mouseup', function (event) {
     mouseDown = false;
@@ -408,12 +408,12 @@ elem.addEventListener('mouseup', function (event) {
     selectedIndex = -1;
 });
 
-elem.addEventListener('touchend', function (event) {
-    mouseDown = false;
-    event.preventDefault();
-    selectedItem = null;
-    selectedIndex = -1;
-});
+// elem.addEventListener('touchend', function (event) {
+//     mouseDown = false;
+//     event.preventDefault();
+//     selectedItem = null;
+//     selectedIndex = -1;
+// });
 
 elem.addEventListener('mouseout', function (event) {
     mouseDown = false;
