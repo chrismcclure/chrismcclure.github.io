@@ -106,9 +106,13 @@ function FillInHistory(history){
     var dateIncreaser = 28;
 
     for (let i = history.length - 1; i >= 0; i--) {     
+        var holderDiv = document.createElement("div");
+        holderDiv.classList.add("history-element")
+
         var pargraph = document.createElement("p");
+        pargraph.classList.add("history-paragraph");
         pargraph.innerHTML = history[i].text;
-        mainDiv.appendChild(pargraph);
+      
 
         var today = new Date();
         today.setDate(today.getDate() + (i + dateIncreaser));
@@ -117,8 +121,11 @@ function FillInHistory(history){
             openDate = date;
         }
         var pargraph2 = document.createElement("p");
+        
         pargraph2.innerHTML = '<strong>Updated by:</strong> ' + history[i].person + " " + date;
-        mainDiv.appendChild(pargraph2);
+        holderDiv.appendChild(pargraph);
+        holderDiv.appendChild(pargraph2);
+        mainDiv.appendChild(holderDiv);
     }
 }
 

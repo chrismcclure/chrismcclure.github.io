@@ -34,6 +34,10 @@ var previousNodes = [];
 var previousNodesTempHolder = [];
 var originalViewNodes = [];
 
+$(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+
 ///Parse the files
 Papa.parse(csvFilePath+"?_="+ (new Date).getTime(), {
     header: true,
@@ -204,10 +208,10 @@ function AddDataToRowToTable(issue) {
     var buttonHtml = '';
         console.log(issue);
     if (issue.open) {
-        buttonHtml = '<a href="issue.html?Id=' + issue.id + '" class="btn btn-success">Open Issue</a>';
+        buttonHtml = '<a href="issue.html?Id=' + issue.id + '" class="btn btn-primary">Open Issue</a>';
     }
     else {
-        buttonHtml = '<a class="btn btn-success disabled">Open Issue</a>';
+        buttonHtml = '<a class="btn btn-primary disabled">Open Issue</a>';
     }
     var textnode5 = buttonHtml;
     cell1.appendChild(textnode1);
@@ -319,12 +323,12 @@ function SetDefaultLayout() {
     for (let i = 0; i < nodes.length; i++) {
         //Right now this will work, but if it gets big figure this out
         if (nodes[i].level === 1) {
-            nodes[i].top = 60;
-            nodes[i].left = canvas.width / 5;
+            nodes[i].top = 30;
+            nodes[i].left = canvas.width / 3.7;
         }
 
         if (nodes[i].level === 2) {
-            nodes[i].top = 175;
+            nodes[i].top = 140;
         }
 
         if (nodes[i].level === 3) {
@@ -340,7 +344,7 @@ function SetDefaultLayout() {
         var levelNodes = nodes.filter(x => x.level == i);
         if (levelNodes.length == 2 && ((levelNodes[0].parent != levelNodes[1].parent) || i == 2)) {
             AdjustWidth(levelNodes[0].Id, canvas.width / 18)
-            AdjustWidth(levelNodes[1].Id, canvas.width / 2.5)
+            AdjustWidth(levelNodes[1].Id, canvas.width / 2)
         }
     }
 }
@@ -375,6 +379,7 @@ elem.addEventListener('dblclick', function (event) {
 window.addEventListener('resize', function (event) {
     canvas.width = parent.offsetWidth;
     canvas.height = parent.offsetHeight;
+    SetDefaultLayout();
     draw(true);
 });
 
@@ -509,7 +514,7 @@ function draw(setLeft) {
     //Set the legend on the top left
     c.font = "16px Calibri";
     //Green Circle
-    c.arc(15, 20, 12, 0, Math.PI * 2, false);
+    c.arc(15, (canvas.height - 20), 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = greenCircle;
     c.fill();
@@ -517,15 +522,15 @@ function draw(setLeft) {
     c.beginPath();
 
     //Red Circle
-    c.arc(160, 20, 12, 0, Math.PI * 2, false);
+    c.arc(160, (canvas.height - 20), 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = redCircle;
     c.fill();
     c.stroke();
     c.beginPath();
     c.fillStyle = black;
-    c.fillText("Resolved Issues", 35, 25)
-    c.fillText("Unresolved Issues", 180, 25)
+    c.fillText("Resolved Issues", 35, (canvas.height - 15))
+    c.fillText("Unresolved Issues", 180, (canvas.height - 15))
     c.beginPath();
 
     //Create objects for the buttons

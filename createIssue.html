@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css">
+    <link rel="stylesheet" type="text/css" href="style/main.css?1346315">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -25,56 +25,65 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
                     <a class="navbar-brand" href="index.html">Assistant To The Manager</a>
                 </div>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <form class="navbar-form navbar-left" action="/action_page.php">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search">
-                            </div>
-                            <button type="submit" class="btn btn-default">Submit</button>
-                        </form>
-                    </li>
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                </ul>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                                             
+                        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    </ul>
+                    <form class="navbar-form navbar-right" action="/action_page.php">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+                </div>
             </div>
         </nav>
         <div class="row">
-            <div class="col-md-4"></div>
-            <div class="form-group  col-md-4 col-sm-12">
-                <h2><span id="Issue-Name">Create Issue</span> </h2>
-                <p><label for="issue-title">Issue Type:</label>     </p>           
+            <div class="col-md-3"></div>
+            <div class="form-group  col-md-6 col-sm-12 ">
+                <h1 class="text-center zero-top-margin"><span id="Issue-Name">Create New Issue</span> </h1>
+                <div class="main-form">              
+                <p class="less-margin-bottom"><label for="issue-title">Issue Type:</label>     </p>           
                <label class="radio-inline"><input type="radio" name="issueType" value="report" id="direct-report" checked>Direct Report</label>
                 <label class="radio-inline"><input type="radio" name="issueType"id="self" value="self" >Self</label>                
                 <label class="radio-inline"><input type="radio" name="issueType" id="employee" value="employee">Another Employee</label>
                 <label class="radio-inline"><input type="radio" name="issueType" id="leader" value="leader">Leader</label>   
                 <p></p>                             
-                <label for="issue-title">Title:</label>
-                <input type="text" class="form-control" id="issue-title">
-                <label for="issue-description">Description:</label>
-                <textarea class="form-control" rows="5" id="issue-description"></textarea>
-                <div id="list-holder">
+                <label  for="issue-title">Title:</label>
+                <input type="text" class="form-control" id="issue-title" placeholder="Title of the issue">
+                <label class="more-margin-top" for="issue-description">Description:</label>
+                <textarea class="form-control" rows="5" id="issue-description" placeholder="Enter a breif description of the issue..."></textarea>
+                <div id="list-holder" class="more-margin-top">
                     <label for="employee-list">Employee Involved:</label>
-                    <input type="text" class="form-control" id="employee-list" list="employees">
+                    <input type="text" class="form-control" id="employee-list" list="employees" placeholder="Select employee from dropdown">
                     <datalist id="employees">
                     </datalist>
                 </div>
                 <p></p>
                
-                <p class="checkbox-holder"><label for="visible">Leader To Notify</label></p>
+                <p class="checkbox-holder less-margin-bottom"><label for="visible">Leader To Notify:</label></p>
                 <div class="checkbox-holder">
-                    <label><input type="checkbox" name="leader" value="Austin Lovejoy" checked="true" >Austin Lovejoy - Senior VP</label>
+                    <label class="not-bold"><input type="checkbox" name="leader" value="Austin Lovejoy" checked="true" class="leader-checkbox" >Austin Lovejoy - Senior VP</label>
                 </div>
                 <div class="checkbox-holder">
-                    <label><input type="checkbox" name="leader" value="Kevin Brockman">Kevin Brockman - President</label>
+                    <label class="not-bold"><input type="checkbox" name="leader" value="Kevin Brockman" class="leader-checkbox">Kevin Brockman - President</label>
                 </div>
-                <p><label for="visible">Issue Visibility</label></p>
+                <p class="less-margin-bottom"><label for="visible">Issue Visibility:</label></p>
                 <label class="radio-inline"><input type="radio" name="visible" value="standard" checked>Standard</label>
                 <label class="radio-inline"><input type="radio" name="visible" value="private">Private</label>
-                <p></p>
-                <button class="btn btn-success" id="create-issue-button">Create Issue</button>
+                <p class="text-center more-more-margin-top">  <button class="btn btn-success btn-lg text-center" id="create-issue-button">Create Issue</button></p>              
+            </div>
             </div>
         </div>
     </div>

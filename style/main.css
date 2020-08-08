@@ -1,10 +1,20 @@
 .left-half{  
    /* border: 1px solid pink; */
    height: 600px;  
+   overflow-x:hidden;
+   overflow-y:hidden;
+    width:100%;
+   /* You may also want to try adding:*/
+    margin: 0;
+    padding: 0;
 }
 
-.theader-background{
+.theader-background-primary{
    background-color: #428BCA;
+}
+
+.theader-background-black{
+   background-color: black;
 }
 
 .white-text{
@@ -13,4 +23,56 @@
 
 .zero-padding{
    padding: 0 !important;
+}
+
+.zero-top-margin{
+   margin-top: 0 !important;
+}
+
+.leader-checkbox{
+   margin-right: 8px !important;
+   vertical-align: top !important;
+}
+
+.less-margin-bottom{
+   margin-bottom: 0px;
+}
+
+.not-bold{
+   font-weight: 300;
+}
+
+.more-margin-top{
+   margin-top: 6px;
+}
+
+.more-more-margin-top{
+   margin-top: 12px;
+}
+
+/*Main Form Styling*/
+.main-form{
+   border: 1px solid black;
+   padding: 24px;
+   border-radius: 12px;
+   background-color: #E9ECEF;
+   margin-bottom: 24px;
+}
+
+/*history elements*/
+.history-element{
+   margin-bottom: 18px;
+}
+
+.history-paragraph{
+   border: 1px solid black;
+   border-radius: 6px;
+   background-color: white;;
+   margin-bottom: 6px;
+   padding: 12px;
+}
+
+.odd{
+   display: none;
+   background-color: pink;
 }

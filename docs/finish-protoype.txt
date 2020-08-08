@@ -1,6 +1,10 @@
 Main page:
 
 Desktop
+8.Add select date range buttons (doesn't do anything)
+
+
+Main Screen done
 1. Spell assistant to the manager correctly banner and tab head
 2. Clear storage button to bottom of page
 3. Add footer
@@ -9,9 +13,14 @@ Desktop
 6. Move the legend to the bottom of canvas
 7. Make full list button not option on mobile
 
+mobile
+
+
 Create Issue:
 
 Desktop
+
+Done
 1) align leader to notify - 
 2) either a background around it or a border to make it look like a form?  Jumbo tron?
 

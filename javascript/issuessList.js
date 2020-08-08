@@ -9,6 +9,10 @@ var overviewNode;
 var maxIdKey = 'MaxId';
 var maxIdFromFileKey = 'MaxIdFromFile';
 
+$(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+
 ///Parse the files
 Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
     header: true,
@@ -161,10 +165,10 @@ function AddDataToRowToTable(issue) {
     var textEmploy = document.createTextNode(issue.emp);
     var textButton;
     if(issue.open){
-        textButton = '<a href="issue.html?Id='+issue.id+'"  class="btn btn-success" role="button">Open Issue</a>';
+        textButton = '<a href="issue.html?Id='+issue.id+'"  class="btn btn-primary" role="button">Open Issue</a>';
     }
     else{
-        textButton = '<a href="issue.html?Id='+issue.id+'"  class="btn btn-success disabled" role="button">Open Issue</a>';
+        textButton = '<a href="issue.html?Id='+issue.id+'"  class="btn btn-primary disabled" role="button">Open Issue</a>';
     }
     
     var textDescrip;
