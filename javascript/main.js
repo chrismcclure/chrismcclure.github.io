@@ -34,9 +34,9 @@ var previousNodes = [];
 var previousNodesTempHolder = [];
 var originalViewNodes = [];
 
-$(document).ready( function () {
-    $('#myTable').DataTable();
-} );
+// $(document).ready( function () {
+//     $('#myTable').DataTable();
+// } );
 
 ///Parse the files
 Papa.parse(csvFilePath+"?_="+ (new Date).getTime(), {
@@ -162,6 +162,7 @@ function AddDataToTable(issues) {
         AddDataToRowToTable(issues[i]);
         AddIssueToLocalStorage(issues[i]);
     }
+    $('#myTable').DataTable();
     //Update the date range
     var dates = issuesOnScreen.sort((a, b) => b.dateObject - a.dateObject);
     var outPut = "No issues";
@@ -244,7 +245,7 @@ function AddDataToIssuesRecords(issues) {
 }
 
 function FormatDate(date) {
-    return date.getMonth() + '-' + date.getDate() + '-' + date.getFullYear();
+    return date.getMonth() + '-' + date.getDate() + '-' + date.getFullYear().toString().substr(-2);      
 }
 
 //Button clicks

@@ -9,9 +9,9 @@ var overviewNode;
 var maxIdKey = 'MaxId';
 var maxIdFromFileKey = 'MaxIdFromFile';
 
-$(document).ready( function () {
-    $('#myTable').DataTable();
-} );
+// $(document).ready( function () {
+//     $('#myTable').DataTable();
+// } );
 
 ///Parse the files
 Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
@@ -69,7 +69,7 @@ function loadIssues(){
         originalIssues = results.data;  
         PullFromLocalStorage();         
         AddDataToIssuesRecords(issues);    
-        AddDataToTable(issues);
+        AddDataToTable(issues);     
         }
     });
 }
@@ -119,9 +119,9 @@ function GetCurrentMaxFileId(){
 }
 
 function AddDataToTable(issues){
-    issuesOnScreen = [];
+    issuesOnScreen = [];    
     for (let i = 0; i < issues.length; i++) {
-       AddDataToRowToTable(issues[i]);        
+      AddDataToRowToTable(issues[i]);        
     }
     //Update the date range
     var dates = issuesOnScreen.sort((a, b) => b.dateObject - a.dateObject);  
@@ -131,6 +131,7 @@ function AddDataToTable(issues){
     } 
     var dateRangeElem = document.getElementById('date-range');
     dateRangeElem.innerHTML = outPut;
+    $('#myTable').DataTable();
 }
 
 function UpdateTableTitle(node){
@@ -146,7 +147,7 @@ function AddDataToRowToTable(issue) {
     }
     //This array is cleared and updated in AddDateToTable  method
     issuesOnScreen.push(issue);
-    var owner = issueOwner[0].Name;
+    var owner = issueOwner[0].Name;    
     var tBodyElem = document.getElementById("table-data");
     //If you want to add more. Make it an Array!
     var row = document.createElement("tr");
@@ -211,7 +212,7 @@ function AddDataToRowToTable(issue) {
     row.appendChild(cellEmploy);
     row.appendChild(cellCreator);
     row.appendChild(cellButton);
-    tBodyElem.appendChild(row);
+    tBodyElem.appendChild(row); 
 }
 
 function AddDataToIssuesRecords(issues){
@@ -231,5 +232,5 @@ function AddDataToIssuesRecords(issues){
 }
 
 function FormatDate(date){
-  return  date.getMonth()+'-'+date.getDate()  +'-'+ date.getFullYear();
+    return date.getMonth() + '-' + date.getDate() + '-' + date.getFullYear().toString().substr(-2);  
 }

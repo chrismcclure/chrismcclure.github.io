@@ -131,5 +131,5 @@ function FillInHistory(history){
 
 
 function FormatDate(date) {
-    return date.getMonth() + '-' + date.getDate() + '-' + date.getFullYear();
+    return date.getMonth() + '-' + date.getDate() + '-' + date.getFullYear().toString().substr(-2);  
 }

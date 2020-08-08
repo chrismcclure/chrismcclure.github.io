@@ -1,3 +1,7 @@
+done
+overall tables:
+search function from datatable - don't erase data on search/filter
+
 Main page:
 
 Desktop
@@ -28,7 +32,7 @@ Issues List
 
 Desktop 
 1) Better header layout
-2) search function from datatable
+2) 
 3) 
 
 
