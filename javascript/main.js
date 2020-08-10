@@ -34,12 +34,8 @@ var previousNodes = [];
 var previousNodesTempHolder = [];
 var originalViewNodes = [];
 
-// $(document).ready( function () {
-//     $('#myTable').DataTable();
-// } );
-
 ///Parse the files
-Papa.parse(csvFilePath+"?_="+ (new Date).getTime(), {
+Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
     header: true,
     download: true,
     dynamicTyping: true,
@@ -66,7 +62,7 @@ Papa.parse(csvFilePath+"?_="+ (new Date).getTime(), {
 });
 
 function loadIssues() {
-    Papa.parse(issuesFile+"?_="+ (new Date).getTime(), {
+    Papa.parse(issuesFile + "?_=" + (new Date).getTime(), {
         header: true,
         download: true,
         dynamicTyping: true,
@@ -149,7 +145,7 @@ function GetCurrentMaxFileId() {
 function AddIssueToLocalStorage(issue) {
     var currentId = JSON.stringify(localStorage.getItem(issues.id));
     if (currentId !== 'null') {
-        
+
     }
     else {
         localStorage.setItem(issue.id, JSON.stringify(issue))
@@ -161,6 +157,7 @@ function AddDataToTable(issues) {
     for (let i = 0; i < issues.length; i++) {
         AddDataToRowToTable(issues[i]);
         AddIssueToLocalStorage(issues[i]);
+        AddDataToMobilePanel(issues[i]);
     }
     $('#myTable').DataTable();
     //Update the date range
@@ -177,6 +174,79 @@ function UpdateTableTitle(node) {
     var titleSpan = document.getElementById('title-name');
     titleSpan.innerText = node.Name;
     //Need some way to get all the children then make sure they are included in the issues
+}
+
+function AddDataToMobilePanel(issue) {
+    var issueOwner = nodes.filter(x => x.Id == issue.owner);
+    if (issueOwner.length == 0) {
+        return;
+    }
+    var mainHolderDiv = document.getElementById("panel-holder-div");
+
+    var mainPanelDiv = document.createElement("div");
+    mainPanelDiv.classList.add("panel");
+    mainPanelDiv.classList.add("panel-default");
+    var panelHeaderDiv = document.createElement("div");
+    panelHeaderDiv.classList.add("panel-heading");
+    panelHeaderDiv.classList.add("text-center");
+    var panelHeaderText = document.createElement("h3");
+    panelHeaderText.classList.add("zero-top-margin");
+    panelHeaderText.setAttribute("id", "panel-title");
+    panelHeaderText.innerText = issue.title;
+    panelHeaderDiv.appendChild(panelHeaderText);
+    mainPanelDiv.appendChild(panelHeaderDiv);
+    //put the rest here
+    var panelBodyDiv = document.createElement("div");
+    panelBodyDiv.classList.add("panel-body");
+    panelBodyDiv.appendChild(CreatePanelHolderDiv("Owner:", issueOwner[0].Name));
+    panelBodyDiv.appendChild(CreatePanelHolderDiv("Date:", issue.date));
+
+    var statusToUse;
+    if (issue.status === null || issue.status === undefined) {
+        statusToUse = "Resolved"
+    }
+    else {
+        statusToUse = issue.status;
+    }
+
+    panelBodyDiv.appendChild(CreatePanelHolderDiv("Status", statusToUse));
+    panelBodyDiv.appendChild(CreatePanelHolderDiv("Employee:", issue.emp));
+
+    var buttonDiv = document.createElement("div");
+    buttonDiv.classList.add("text-center");
+
+    var button = document.createElement("a");   
+    var buttonHtml = '';
+    if (issue.open) {
+        buttonHtml = '<a href="issue.html?Id=' + issue.id + '" class="btn btn-primary btn-lg">Open Issue</a>';
+    }
+    else {
+        buttonHtml = '<a class="btn btn-primary btn-lg disabled">Open Issue</a>';
+        panelHeaderText.setAttribute("id", "panel-title");
+    }
+    button.innerHTML = buttonHtml;
+    buttonDiv.appendChild(button);
+    panelBodyDiv.appendChild(buttonDiv);
+    mainPanelDiv.appendChild(panelBodyDiv);
+    mainHolderDiv.appendChild(mainPanelDiv);
+
+}
+
+function CreatePanelHolderDiv(textTitle, textValue) {
+    var panelHolderDiv = document.createElement("div");
+    panelHolderDiv.classList.add("pannel-info-holder");
+
+    var labelSpan = document.createElement("span");
+    labelSpan.classList.add("my-panel-label");
+    labelSpan.innerText = textTitle;
+
+    var valueSpan = document.createElement("span");
+    valueSpan.classList.add("panel-content");
+    valueSpan.innerText = textValue;
+
+    panelHolderDiv.appendChild(labelSpan);
+    panelHolderDiv.appendChild(valueSpan);
+    return panelHolderDiv;
 }
 
 function AddDataToRowToTable(issue) {
@@ -199,15 +269,14 @@ function AddDataToRowToTable(issue) {
     var textnode2 = document.createTextNode(issue.title);
     var textnode3 = document.createTextNode(issue.date);
     var textnode4;
-    if(issue.status === null || issue.status === undefined){
-         textnode4 = document.createTextNode("Resolved");
-    } 
-    else{
-        textnode4= document.createTextNode(issue.status);
+    if (issue.status === null || issue.status === undefined) {
+        textnode4 = document.createTextNode("Resolved");
     }
-     
+    else {
+        textnode4 = document.createTextNode(issue.status);
+    }
+
     var buttonHtml = '';
-        console.log(issue);
     if (issue.open) {
         buttonHtml = '<a href="issue.html?Id=' + issue.id + '" class="btn btn-primary">Open Issue</a>';
     }
@@ -245,7 +314,7 @@ function AddDataToIssuesRecords(issues) {
 }
 
 function FormatDate(date) {
-    return date.getMonth() + '-' + date.getDate() + '-' + date.getFullYear().toString().substr(-2);      
+    return date.getMonth() + '-' + date.getDate() + '-' + date.getFullYear().toString().substr(-2);
 }
 
 //Button clicks
@@ -468,8 +537,8 @@ function handleMouseDown(e) {
 
 
 var previousButton = document.getElementById('previous-view');
-previousButton.addEventListener('click', function (event){
-    
+previousButton.addEventListener('click', function (event) {
+
     previousNodesTempHolder = nodes;
     nodes = previousNodes;
     previousNodes = previousNodesTempHolder;
@@ -485,7 +554,7 @@ previousButton.addEventListener('click', function (event){
 
 var homeButton = document.getElementById('home-view');
 
-homeButton.addEventListener('click',function(event){
+homeButton.addEventListener('click', function (event) {
     nodes = originalViewNodes
     SetHomepageDetails();
     tempNewNodes = [];

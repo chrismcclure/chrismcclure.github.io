@@ -9,10 +9,6 @@ var overviewNode;
 var maxIdKey = 'MaxId';
 var maxIdFromFileKey = 'MaxIdFromFile';
 
-// $(document).ready( function () {
-//     $('#myTable').DataTable();
-// } );
-
 ///Parse the files
 Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
     header: true,

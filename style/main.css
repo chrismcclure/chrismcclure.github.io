@@ -71,8 +71,15 @@
    margin-bottom: 6px;
    padding: 12px;
 }
+/*panels*/
+.my-panel-label{
+   margin-left: 24px;
+   font-size: 18px;
+   min-width: 100px;
+   font-weight: bold !important;
+   display: inline-block;
+}
 
-/* .odd{
-   display: none;
-   background-color: pink;
-} */
+.panel-content{
+   font-size: 18px;
+}

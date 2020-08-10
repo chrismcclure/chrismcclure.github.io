@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css?1346315">
+    <link rel="stylesheet" type="text/css" href="style/main.css?1346555">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -36,6 +36,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <a class="navbar-brand" href="index.html"><img height="30" width="30" src="assets/hospital.png"/></a>
                 <a class="navbar-brand" href="index.html">Assistant To The Manager</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -60,11 +61,10 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <h1 class="zero-top-margin"><span id="title-name">Temp</span> Issue Overview</h1>
-                <h4>Issues Date Range <span id="date-range"></span></h4>
-            </div>
-           
+                <h4>Issues Date Range: <span id="date-range"></span> </h4>               
+            </div>           
         </div>
-        <div class="row ">
+        <div class="row">
             <div class="col-md-5 col-sm-12 left-half" id="parent">
                 <div class=" text-left hidden-sm hidden-xs ">
                     <button class="btn btn-primary" id="home-view">All Nodes</button>
@@ -78,7 +78,7 @@
                 </div>
                 <Canvas id="myCanvas"></Canvas>
             </div>
-            <div class=" col-md-7 col-sm-12 ">
+            <div class=" col-md-7 hidden-xs">
                 <table  id="myTable" class="table table-sm table-bordered table-responsive">
                     <thead class="theader-background-black white-text">
                         <tr>
@@ -93,9 +93,29 @@
                     </tbody>
                 </table>
             </div>
+            <div class="col-sm-12 hidden-sm hidden-md hidden-lg hidden-xl">
+                <h2 class="text-center zero-top-margin">Issues</h2>
+                <div id="panel-holder-div">                        
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <h3 class="zero-top-margin" id="panel-title">Panel Heading</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="pannel-info-holder"><span class="my-panel-label">Owner:</span> <span class="panel-content"
+                                    id="panel-owner">stuff</span></div>
+                            <div class="pannel-info-holder"><span class="my-panel-label">Date:</span> <span class="panel-content"
+                                    id="panel-date">Tim Timmington</span></div>
+                            <div class="pannel-info-holder"><span class="my-panel-label">Status:</span> <span class="panel-content"
+                                    id="panel-status">Tim Timmington</span></div>
+                            <div class="pannel-info-holder"><span class="my-panel-label">Employee:</span> <span
+                                    class="panel-content" id="panel-employee">Tim Timmington</span></div>
+                            <div class="text-center"> <button class="btn btn-lg btn-primary">Open Issue</button</div>
+                        </div>
+                    </div>
+                </div>
         </div>
         <footer class="text-right">
-            <button class="btn btn-warning navbar-btn" id="clear-storage">Clear Storage</button>
+            <button class="btn btn-warning" id="clear-storage">Clear Storage</button>
         </footer>
     </div>
 
