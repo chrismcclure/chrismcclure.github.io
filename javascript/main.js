@@ -209,7 +209,7 @@ function AddDataToMobilePanel(issue) {
         statusToUse = issue.status;
     }
 
-    panelBodyDiv.appendChild(CreatePanelHolderDiv("Status", statusToUse));
+    panelBodyDiv.appendChild(CreatePanelHolderDiv("Status:", statusToUse));
     panelBodyDiv.appendChild(CreatePanelHolderDiv("Employee:", issue.emp));
 
     var buttonDiv = document.createElement("div");
@@ -394,7 +394,7 @@ function SetDefaultLayout() {
         //Right now this will work, but if it gets big figure this out
         if (nodes[i].level === 1) {
             nodes[i].top = 30;
-            nodes[i].left = canvas.width / 3.7;
+            nodes[i].left = (canvas.width / 3);
         }
 
         if (nodes[i].level === 2) {
@@ -413,8 +413,8 @@ function SetDefaultLayout() {
     for (let i = 1; i < 5; i++) {
         var levelNodes = nodes.filter(x => x.level == i);
         if (levelNodes.length == 2 && ((levelNodes[0].parent != levelNodes[1].parent) || i == 2)) {
-            AdjustWidth(levelNodes[0].Id, canvas.width / 18)
-            AdjustWidth(levelNodes[1].Id, canvas.width / 2)
+            AdjustWidth(levelNodes[0].Id, (canvas.width / 20));
+            AdjustWidth(levelNodes[1].Id, (canvas.width - (130 + (canvas.width / 5))));
         }
     }
 }
@@ -448,9 +448,9 @@ elem.addEventListener('dblclick', function (event) {
 
 window.addEventListener('resize', function (event) {
     canvas.width = parent.offsetWidth;
-    canvas.height = parent.offsetHeight;
+    canvas.height = parent.offsetHeight;    
     SetDefaultLayout();
-    draw(true);
+    draw(false);
 });
 
 //Mouse is down do this tuff
@@ -640,10 +640,13 @@ function draw(setLeft) {
 
     //make centers for the rectangle
     for (i = 0; i < nodes.length; i++) {
-        if (nodes[i].left === undefined || setLeft) {
-            nodes[i].left = (canvas.width / nodes[i].LeftDivid)
+        console.log("small screen");
+        if (nodes[i].Id === 6) {
+            nodes[i].left = (canvas.width / 20);
         }
-
+        if (nodes[i].Id === 7) {
+            nodes[i].left = (canvas.width - (130 + (canvas.width / 5)));
+        }
         var center = { x: (nodes[i].left + (nodes[i].width / 2)), y: (nodes[i].top + (nodes[i].height / 2)) }
         nodes[i].x = center.x;
         nodes[i].y = center.y;
