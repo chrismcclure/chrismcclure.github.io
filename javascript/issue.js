@@ -9,7 +9,7 @@ var selectedIssue;
 var openDate;
 
 ///Parse the files
-Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
+Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
     header: true,
     download: true,
     dynamicTyping: true,
@@ -49,8 +49,7 @@ function setThePage(){
         console.log('Selected issue null or undefined')
         return
     }
-   
-    console.log("here is the issue from memory");
+
     console.log(selectedIssue);
     var title = document.getElementById('Issue-Name');
     title.innerText = selectedIssue.title;
@@ -59,13 +58,12 @@ function setThePage(){
     description.innerText = selectedIssue.description;
 
     if(selectedIssue.id === 4){
-        console.log('issues 4');
-        Papa.parse(issueFile4, {
+        console.log("issue 4");
+        Papa.parse(issueFile4 +"?_="+ (new Date).getTime(), {
             header: true,
             download: true,
             dynamicTyping: true,
             complete: function (results) {        
-                console.log("parsed the file for isssue 4");
             issuesHistory = results.data;               
                 FillInHistory(issuesHistory);
                 var creatorSpan = document.getElementById('creator');
@@ -83,13 +81,12 @@ function setThePage(){
 
     if(selectedIssue.id === 1){
         console.log('issues 1');
-        Papa.parse(issueFile1, {
+        Papa.parse(issueFile1 +"?_="+ (new Date).getTime(), {
             header: true,
             download: true,
             dynamicTyping: true,
             complete: function (results) {        
-            issuesHistory = results.data;  
-            console.log("parsed the file for isssue 1");             
+            issuesHistory = results.data;               
                 FillInHistory(issuesHistory);
                 var creatorSpan = document.getElementById('creator');
                 creatorSpan.innerText =  selectedIssue.inputer+  " - " + openDate;
