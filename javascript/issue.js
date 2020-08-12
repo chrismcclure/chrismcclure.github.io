@@ -3,7 +3,7 @@ var nodes = [];
 var issuesHistory1 = [];
 var issuesHistory4 = [];
 var csvFilePath = 'files/default.csv';
-var issueFile1 = 'issue1.csv';
+var issueFile1 = 'Issue1.csv';
 var issueFile4 = 'Issue4.csv';
 var maxIdKey = 'MaxId';
 var selectedIssue;
