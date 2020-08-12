@@ -59,7 +59,7 @@ function setThePage(){
 
     if(selectedIssue.id === 4){
         console.log("issue 4");
-        Papa.parse(issueFile4 +"?_="+ (new Date).getTime(), {
+        Papa.parse(issueFile4, {
             header: true,
             download: true,
             dynamicTyping: true,
@@ -81,7 +81,7 @@ function setThePage(){
 
     if(selectedIssue.id === 1){
         console.log('issues 1');
-        Papa.parse(issueFile1 +"?_="+ (new Date).getTime(), {
+        Papa.parse(issueFile1, {
             header: true,
             download: true,
             dynamicTyping: true,
