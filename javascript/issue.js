@@ -9,7 +9,7 @@ var selectedIssue;
 var openDate;
 
 ///Parse the files
-Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
+Papa.parse(csvFilePath, {
     header: true,
     download: true,
     dynamicTyping: true,
