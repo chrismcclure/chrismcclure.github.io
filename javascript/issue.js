@@ -63,8 +63,9 @@ function setThePage(){
             header: true,
             download: true,
             dynamicTyping: true,
-            complete: function (results) {        
-            issuesHistory = results.data;               
+            complete: function (results) {      
+                console.log("here is issue 4.")  
+                issuesHistory = results.data;               
                 FillInHistory(issuesHistory);
                 var creatorSpan = document.getElementById('creator');
                 creatorSpan.innerText =  selectedIssue.inputer+  " - " + openDate;
@@ -85,7 +86,8 @@ function setThePage(){
             header: true,
             download: true,
             dynamicTyping: true,
-            complete: function (results) {        
+            complete: function (results) {    
+                console.log("here is issue 1.")      
             issuesHistory = results.data;               
                 FillInHistory(issuesHistory);
                 var creatorSpan = document.getElementById('creator');
