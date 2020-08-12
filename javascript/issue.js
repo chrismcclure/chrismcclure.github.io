@@ -1,6 +1,7 @@
 var issues = [];
 var nodes = [];
-var issuesHistory = [];
+var issuesHistory1 = [];
+var issuesHistory4 = [];
 var csvFilePath = 'files/default.csv';
 var issueFile1 = 'files/issue1.csv';
 var issueFile4 = 'files/Issue4.csv';
@@ -20,6 +21,26 @@ Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
             setThePage();
     }
 });
+
+Papa.parse(issueFile4, {
+    header: true,
+    download: true,
+    dynamicTyping: true,
+    complete: function (results) {      
+        console.log("here is issue 4.")  
+        issuesHistory4 = results.data;   
+    }
+});
+
+Papa.parse(issueFile1, {
+    header: true,
+    download: true,
+    dynamicTyping: true,
+    complete: function (results) {    
+        console.log("here is issue 1.")      
+        issuesHistory1 = results.data; 
+    }
+});    
 
 function loadIssues(){
    var maxId = GetCurrentMaxId();
@@ -44,8 +65,8 @@ function getIssue(){
     selectedIssue = issues.find(o => o.id == idToGet);  
 }
 
-function setThePage(){
-    if(selectedIssue === null || selectedIssue === undefined){
+function setThePage() {
+    if (selectedIssue === null || selectedIssue === undefined) {
         console.log('Selected issue null or undefined')
         return
     }
@@ -57,50 +78,34 @@ function setThePage(){
     var description = document.getElementById('issue-description')
     description.innerText = selectedIssue.description;
 
-    if(selectedIssue.id === 4){
+    if (selectedIssue.id === 4) {
         console.log("issue 4");
-        Papa.parse(issueFile4, {
-            header: true,
-            download: true,
-            dynamicTyping: true,
-            complete: function (results) {      
-                console.log("here is issue 4.")  
-                issuesHistory = results.data;               
-                FillInHistory(issuesHistory);
-                var creatorSpan = document.getElementById('creator');
-                creatorSpan.innerText =  selectedIssue.inputer+  " - " + openDate;
-                var ownerSpan = document.getElementById('leader');
-                console.log(nodes);
-                overviewNode = nodes.find(o => o.Id == selectedIssue.owner);
-                console.log(overviewNode);
-                ownerSpan.innerHTML = overviewNode.Name;
-                var statusSelect = document.getElementById('status');
-                statusSelect.selectedIndex = 3;
-            }
-        });
+        FillInHistory(issuesHistory4);
+        var creatorSpan = document.getElementById('creator');
+        creatorSpan.innerText = selectedIssue.inputer + " - " + openDate;
+        var ownerSpan = document.getElementById('leader');
+        console.log(nodes);
+        overviewNode = nodes.find(o => o.Id == selectedIssue.owner);
+        console.log(overviewNode);
+        ownerSpan.innerHTML = overviewNode.Name;
+        var statusSelect = document.getElementById('status');
+        statusSelect.selectedIndex = 3;
+
     }
 
-    if(selectedIssue.id === 1){
+    if (selectedIssue.id === 1) {
         console.log('issues 1');
-        Papa.parse(issueFile1, {
-            header: true,
-            download: true,
-            dynamicTyping: true,
-            complete: function (results) {    
-                console.log("here is issue 1.")      
-            issuesHistory = results.data;               
-                FillInHistory(issuesHistory);
-                var creatorSpan = document.getElementById('creator');
-                creatorSpan.innerText =  selectedIssue.inputer+  " - " + openDate;
-                var ownerSpan = document.getElementById('leader');
-                console.log(nodes);
-                overviewNode = nodes.find(o => o.Id == selectedIssue.owner);
-                console.log(overviewNode);
-                ownerSpan.innerHTML = overviewNode.Name;
-                var statusSelect = document.getElementById('status');
-                statusSelect.selectedIndex = 2;
-            }
-        });
+        FillInHistory(issuesHistory1);
+        var creatorSpan = document.getElementById('creator');
+        creatorSpan.innerText = selectedIssue.inputer + " - " + openDate;
+        var ownerSpan = document.getElementById('leader');
+        console.log(nodes);
+        overviewNode = nodes.find(o => o.Id == selectedIssue.owner);
+        console.log(overviewNode);
+        ownerSpan.innerHTML = overviewNode.Name;
+        var statusSelect = document.getElementById('status');
+        statusSelect.selectedIndex = 2;
+
     }
 }
 
