@@ -10,37 +10,39 @@ var selectedIssue;
 var openDate;
 
 ///Parse the files
-Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
+Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
     header: true,
     download: true,
     dynamicTyping: true,
-    complete: function (results) {        
-    nodes = results.data;               
-            loadIssues();       
-            getIssue();
-            setThePage();
+    complete: function (results) {
+        nodes = results.data;      
+        Papa.parse(issueFile4, {
+            header: true,
+            download: true,
+            dynamicTyping: true,
+            complete: function (results4) {            
+                issuesHistory4 = results4.data;
+                console.log(issuesHistory4);
+                loadIssues();
+                getIssue();
+                setThePage();
+            }
+        });
+
+        Papa.parse(issueFile1, {
+            header: true,
+            download: true,
+            dynamicTyping: true,
+            complete: function (results1) {               
+                issuesHistory1 = results1.data;
+                loadIssues();
+                getIssue();
+                setThePage();
+            }
+        });
+      
     }
 });
-
-Papa.parse(issueFile4, {
-    header: true,
-    download: true,
-    dynamicTyping: true,
-    complete: function (results) {      
-        console.log("here is issue 4.")  
-        issuesHistory4 = results.data;   
-    }
-});
-
-Papa.parse(issueFile1, {
-    header: true,
-    download: true,
-    dynamicTyping: true,
-    complete: function (results) {    
-        console.log("here is issue 1.")      
-        issuesHistory1 = results.data; 
-    }
-});    
 
 function loadIssues(){
    var maxId = GetCurrentMaxId();
@@ -80,6 +82,7 @@ function setThePage() {
 
     if (selectedIssue.id === 4) {
         console.log("issue 4");
+        console.log(issuesHistory4);
         FillInHistory(issuesHistory4);
         var creatorSpan = document.getElementById('creator');
         creatorSpan.innerText = selectedIssue.inputer + " - " + openDate;
