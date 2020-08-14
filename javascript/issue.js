@@ -3,8 +3,8 @@ var nodes = [];
 var issuesHistory1 = [];
 var issuesHistory4 = [];
 var csvFilePath = 'files/default.csv';
-var issueFile1 = 'Issue1.csv';
-var issueFile4 = 'Issue4.csv';
+var issueFile1 = 'files/Issue1.csv';
+var issueFile4 = 'files/Issue4.csv';
 var maxIdKey = 'MaxId';
 var selectedIssue;
 var openDate;
@@ -15,14 +15,15 @@ Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
     download: true,
     dynamicTyping: true,
     complete: function (results) {
-        nodes = results.data;      
+        nodes = results.data;
+
         Papa.parse(issueFile4, {
             header: true,
             download: true,
             dynamicTyping: true,
-            complete: function (results4) {            
+            complete: function (results4) {
                 issuesHistory4 = results4.data;
-                console.log(issuesHistory4);
+                console.log("issues 4 set");
                 loadIssues();
                 getIssue();
                 setThePage();
@@ -33,14 +34,14 @@ Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
             header: true,
             download: true,
             dynamicTyping: true,
-            complete: function (results1) {               
+            complete: function (results1) {
                 issuesHistory1 = results1.data;
+                console.log('issues 1 set');
                 loadIssues();
                 getIssue();
                 setThePage();
             }
         });
-      
     }
 });
 
@@ -67,13 +68,12 @@ function getIssue(){
     selectedIssue = issues.find(o => o.id == idToGet);  
 }
 
-function setThePage() {
+function setThePage(){
     if (selectedIssue === null || selectedIssue === undefined) {
         console.log('Selected issue null or undefined')
         return
     }
 
-    console.log(selectedIssue);
     var title = document.getElementById('Issue-Name');
     title.innerText = selectedIssue.title;
 
@@ -82,18 +82,14 @@ function setThePage() {
 
     if (selectedIssue.id === 4) {
         console.log("issue 4");
-        console.log(issuesHistory4);
         FillInHistory(issuesHistory4);
         var creatorSpan = document.getElementById('creator');
         creatorSpan.innerText = selectedIssue.inputer + " - " + openDate;
         var ownerSpan = document.getElementById('leader');
-        console.log(nodes);
         overviewNode = nodes.find(o => o.Id == selectedIssue.owner);
-        console.log(overviewNode);
         ownerSpan.innerHTML = overviewNode.Name;
         var statusSelect = document.getElementById('status');
         statusSelect.selectedIndex = 3;
-
     }
 
     if (selectedIssue.id === 1) {
@@ -102,13 +98,10 @@ function setThePage() {
         var creatorSpan = document.getElementById('creator');
         creatorSpan.innerText = selectedIssue.inputer + " - " + openDate;
         var ownerSpan = document.getElementById('leader');
-        console.log(nodes);
         overviewNode = nodes.find(o => o.Id == selectedIssue.owner);
-        console.log(overviewNode);
         ownerSpan.innerHTML = overviewNode.Name;
         var statusSelect = document.getElementById('status');
         statusSelect.selectedIndex = 2;
-
     }
 }
 
