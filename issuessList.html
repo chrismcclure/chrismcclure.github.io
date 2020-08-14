@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css?1346315">
+    <link rel="stylesheet" type="text/css" href="style/main.css?1346355">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -12,73 +12,74 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    
+
     <script src="libs/papaparse.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
-  
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
-    
+
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+
     <title>Issues</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-    <div class="container-fluid">
-        <nav class="navbar navbar-inverse">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html"><img height="30" width="30" src="assets/hospital.png"/></a>
-                    <a class="navbar-brand" href="index.html">Assistant To The Manager</a>
-                </div>
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="createIssue.html" class="zero-padding"><button class="btn btn-primary navbar-btn">Create
-                                    Issue</button></a>
-                        </li>                          
-                        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                    </ul>
-                    <form class="navbar-form navbar-right" action="/action_page.php">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
-                        </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </form>
-                </div>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand padding-right-reduced" id="padding-top-ten" href="index.html"><img height="30" width="30" src="assets/hospital.png"/></a>
+                <a class="navbar-brand padding-left-reduced" href="index.html">Assistant To The Manager</a>
             </div>
-        </nav>
-        <div class="row">       
-        <div class=" col-md-12 col-sm-12 right-half">          
-            <h2 class="text-center zero-top-margin"><span id="title-name">Temp</span> Issues</h2> 
-            <h4 class="text-center">Date Range <span id="date-range"></span></h4>              
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="createIssue.html" class="zero-padding"><button
+                                class="btn btn-primary navbar-btn">Create
+                                Issue</button></a>
+                    </li>
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                </ul>
+                <form class="navbar-form navbar-right" action="/action_page.php">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+        <div class="row">
+            <div class=" col-md-12 col-sm-12 right-half">
+                <h2 class="text-center zero-top-margin"><span id="title-name">Temp</span> Issues</h2>
+                <h4 class="text-center">Date Range <span id="date-range"></span></h4>
                 <table id="myTable" class="table table-sm table-bordered">
                     <thead class="theader-background-black white-text">
-                    <tr>
-                      <th>Issue Owner</th>
-                      <th>Title</th>
-                      <th>Status</th>
-                      <th>Description</th>
-                      <th>Date</th>
-                      <th>Employee</th>
-                      <th>Creator</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody id='table-data'>
-                  </tbody>            
+                        <tr>
+                            <th>Issue Owner</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Employee</th>
+                            <th>Creator</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id='table-data'>
+                    </tbody>
                 </table>
-              </div>
+            </div>
 
-        </div>        
+        </div>
     </div>
     <script src="javascript/issuessList.js"></script>
 </body>

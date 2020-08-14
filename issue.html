@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css?1346315">
+    <link rel="stylesheet" type="text/css" href="style/main.css?134315">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -21,43 +21,44 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <nav class="navbar navbar-inverse">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html"><img height="30" width="30" src="assets/hospital.png"/></a>
-                    <a class="navbar-brand" href="index.html">Assistant To The Manager</a>                    
-                </div>
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="createIssue.html" class="zero-padding"><button class="btn btn-primary navbar-btn">Create
-                                    Issue</button></a>
-                        </li>                          
-                        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                    </ul>
-                    <form class="navbar-form navbar-right" action="/action_page.php">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
-                        </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </form>
-                </div>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand padding-right-reduced" id="padding-top-ten" href="index.html"><img height="30"
+                        width="30" src="assets/hospital.png" /></a>
+                <a class="navbar-brand padding-left-reduced" href="index.html">Assistant To The Manager</a>
             </div>
-        </nav>
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class=" col-md-6 col-sm-12">    
-                <h1 class="text-center zero-top-margin">Issue Details</span> </h1>
-                <div class="main-form">
-                    <h3 class="zero-top-margin"><span id="Issue-Name">Issue Name</span> </h3>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="createIssue.html" class="zero-padding"><button
+                                class="btn btn-primary navbar-btn">Create
+                                Issue</button></a>
+                    </li>
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                </ul>
+                <form class="navbar-form navbar-right" action="/action_page.php">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class=" col-md-6 col-sm-12">
+            <h1 class="text-center zero-top-margin">Issue Details</span> </h1>
+            <div class="main-form">
+                <h3 class="zero-top-margin"><span id="Issue-Name">Issue Name</span> </h3>
                 <label for="issue-description">Description:</label>
                 <textarea class="form-control" rows="3" id="issue-description"></textarea>
                 <label for="create-by">Issues Creator:</label>
@@ -65,7 +66,8 @@
                 <label for="create-by">Issue Owner:</label>
                 <p><span id="leader"></span></p>
                 <label for="new-information">New Information:</label>
-                <textarea class="form-control" rows="3" id="information" placeholder="Input updates or new information..."></textarea>
+                <textarea class="form-control" rows="3" id="information"
+                    placeholder="Input updates or new information..."></textarea>
                 <label for="status">Set Status:</label>
                 <select class="form-control" id="status">
                     <option>New</option>
@@ -75,11 +77,11 @@
                     <option>Resolved</option>
                     <option>Removed </option>
                 </select>
-                <p class="more-more-margin-top text-center"><a href="index.html" class="btn btn-warning btn-lg">Update Issue</a></p>
-                <label for="history">Issue History:</label> 
+                <p class="more-more-margin-top text-center"><a href="index.html" class="btn btn-warning btn-lg">Update
+                        Issue</a></p>
+                <label for="history">Issue History:</label>
                 <div id="history">
                 </div>
-            </div>
             </div>
         </div>
     </div>

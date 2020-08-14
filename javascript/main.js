@@ -103,7 +103,7 @@ function PullFromLocalStorage() {
         }
     }
     else {
-        console.log('nothing cool in here :(');
+       //don't do anything
     }
 }
 
@@ -154,6 +154,8 @@ function AddIssueToLocalStorage(issue) {
 
 function AddDataToTable(issues) {
     issuesOnScreen = [];
+    var mainHolderDiv = document.getElementById("panel-holder-div");
+    mainHolderDiv.innerHTML = '';
     for (let i = 0; i < issues.length; i++) {
         AddDataToRowToTable(issues[i]);
         AddIssueToLocalStorage(issues[i]);
@@ -172,7 +174,7 @@ function AddDataToTable(issues) {
 
 function UpdateTableTitle(node) {
     var titleSpan = document.getElementById('title-name');
-    titleSpan.innerText = node.Name;
+        titleSpan.innerText = node.Name;
     //Need some way to get all the children then make sure they are included in the issues
 }
 
@@ -182,7 +184,6 @@ function AddDataToMobilePanel(issue) {
         return;
     }
     var mainHolderDiv = document.getElementById("panel-holder-div");
-
     var mainPanelDiv = document.createElement("div");
     mainPanelDiv.classList.add("panel");
     mainPanelDiv.classList.add("panel-default");
@@ -390,11 +391,15 @@ function GetChild(element, level) {
 
 
 function SetDefaultLayout() {
+    var singleNodeBuffer = (canvas.width - nodes[0].width) / 2;
+    var doubleNodeBuffer = (canvas.width - (nodes[0].width * 2)) / 3;
+    var nodeWidth = nodes[0].width;
+    
     for (let i = 0; i < nodes.length; i++) {
         //Right now this will work, but if it gets big figure this out
         if (nodes[i].level === 1) {
-            nodes[i].top = 30;
-            nodes[i].left = (canvas.width / 3);
+            nodes[i].top = 30;           
+            nodes[i].left = singleNodeBuffer;         
         }
 
         if (nodes[i].level === 2) {
@@ -402,21 +407,21 @@ function SetDefaultLayout() {
         }
 
         if (nodes[i].level === 3) {
-            nodes[i].top = 300;
+            nodes[i].top = 250;
         }
 
         if (nodes[i].level === 4) {
-            nodes[i].top = 425;
+            nodes[i].top = 360;          
         }
     }
     //Honestly this kind of sucks, but works for the prototype
     for (let i = 1; i < 5; i++) {
         var levelNodes = nodes.filter(x => x.level == i);
         if (levelNodes.length == 2 && ((levelNodes[0].parent != levelNodes[1].parent) || i == 2)) {
-            AdjustWidth(levelNodes[0].Id, (canvas.width / 20));
-            AdjustWidth(levelNodes[1].Id, (canvas.width - (130 + (canvas.width / 5))));
-        }
-    }
+            AdjustWidth(levelNodes[0].Id, doubleNodeBuffer);
+            AdjustWidth(levelNodes[1].Id, (doubleNodeBuffer * 2) + nodeWidth);
+        }      
+    }    
 }
 
 function AdjustWidth(Id, left) {
@@ -434,10 +439,12 @@ function textHittest(x, y, node) {
 
 
 ///Mouse Type Events
-elem.addEventListener('dblclick', function (event) {
+elem.addEventListener('click', function (event) {
+    event.preventDefault();
     x = parseInt(event.clientX - offsetX);
     y = parseInt(event.clientY - offsetY);
     var looking = true;
+
     nodes.forEach(function (element) {
         if (y > element.top && y < element.top + element.height && x > element.left && x < element.left + element.width && looking) {
             looking = false;
@@ -447,28 +454,32 @@ elem.addEventListener('dblclick', function (event) {
 }, false);
 
 window.addEventListener('resize', function (event) {
+    event.preventDefault();
     canvas.width = parent.offsetWidth;
-    canvas.height = parent.offsetHeight;    
+    canvas.height = parent.offsetHeight; 
+    canvasOffset = canvas.getBoundingClientRect();   
+    offsetX = canvasOffset.left + window.scrollX;
+    offsetY = canvasOffset.top + window.scrollY;
     SetDefaultLayout();
     draw(false);
 });
 
 //Mouse is down do this tuff
-elem.addEventListener('mousedown', function (event) {
-    mouseDown = true;
-    handleMouseDown(event);
-});
+// elem.addEventListener('mousedown', function (event) {
+//     mouseDown = true;
+//     handleMouseDown(event);
+// });
 
 // elem.addEventListener('touchstart', function (event) {
 //     mouseDown = true;
 //     handleMouseDown(event);
 // });
 
-elem.addEventListener('mousemove', function (event) {
-    if (mouseDown) {
-        handleMouseMove(event);
-    }
-});
+// elem.addEventListener('mousemove', function (event) {
+//     if (mouseDown) {
+//         handleMouseMove(event);
+//     }
+// });
 
 // elem.addEventListener('touchmove', function (event) {
 //     if (mouseDown) {
@@ -476,12 +487,12 @@ elem.addEventListener('mousemove', function (event) {
 //     }
 // });
 
-elem.addEventListener('mouseup', function (event) {
-    mouseDown = false;
-    event.preventDefault();
-    selectedItem = null;
-    selectedIndex = -1;
-});
+// elem.addEventListener('mouseup', function (event) {
+//     mouseDown = false;
+//     event.preventDefault();
+//     selectedItem = null;
+//     selectedIndex = -1;
+// });
 
 // elem.addEventListener('touchend', function (event) {
 //     mouseDown = false;
@@ -490,55 +501,58 @@ elem.addEventListener('mouseup', function (event) {
 //     selectedIndex = -1;
 // });
 
-elem.addEventListener('mouseout', function (event) {
-    mouseDown = false;
-    event.preventDefault();
-    selectedItem = null;
-    selectedIndex = -1;
-});
+// elem.addEventListener('mouseout', function (event) {
+//     mouseDown = false;
+//     event.preventDefault();
+//     selectedItem = null;
+//     selectedIndex = -1;
+// });
 
 // the last mousemove event and move the selected text
 // by that distance
-function handleMouseMove(e) {
-    if (selectedItem === null) {
-        console.log('oh no, its null');
-        return;
-    }
-    e.preventDefault();
-    mouseX = parseInt(e.clientX - offsetX);
-    mouseY = parseInt(e.clientY - offsetY);
+//function handleMouseMove(e) {
+//     if (selectedItem === null) {
+//         console.log('oh no, its null');
+//         return;
+//     }
+//     e.preventDefault();
+//     mouseX = parseInt(e.clientX - offsetX);
+//     mouseY = parseInt(e.clientY - offsetY);
 
-    // Put your mousemove stuff here
-    var dx = mouseX - startX;
-    var dy = mouseY - startY;
-    startX = mouseX;
-    startY = mouseY;
-    var rectangle = selectedItem
-    rectangle.left += dx;
-    rectangle.top += dy;
-    nodes[selectedIndex] = rectangle;
-    draw(false);
-}
+//     // Put your mousemove stuff here
+//     var dx = mouseX - startX;
+//     var dy = mouseY - startY;
+//     startX = mouseX;
+//     startY = mouseY;
+//     var rectangle = selectedItem
+//     rectangle.left += dx;
+//     rectangle.top += dy;
+//     nodes[selectedIndex] = rectangle;
+//     draw(false);
+// }
 
-//When the most is pushed down, figure out if it hit element
-function handleMouseDown(e) {
-    e.preventDefault();
-    startX = parseInt(e.clientX - offsetX);
-    startY = parseInt(e.clientY - offsetY);
-    // Put your mousedown stuff here  
-    for (i = 0; i < nodes.length; i++) {
-        if (textHittest(startX, startY, nodes[i])) {
-            selectedItem = nodes[i];
-            selectedIndex = i;
-            return
-        }
-    }
-}
-
+// //When the most is pushed down, figure out if it hit element
+// function handleMouseDown(e) {
+//     e.preventDefault();
+//     startX = parseInt(e.clientX - offsetX);
+//     startY = parseInt(e.clientY - offsetY);
+//     // Put your mousedown stuff here  
+//     for (i = 0; i < nodes.length; i++) {
+//         if (textHittest(startX, startY, nodes[i])) {
+//             selectedItem = nodes[i];
+//             selectedIndex = i;
+//             return
+//         }
+//     }
+// }
 
 var previousButton = document.getElementById('previous-view');
 previousButton.addEventListener('click', function (event) {
+    PreviousButton(); 
+});
 
+
+function PreviousButton(){
     previousNodesTempHolder = nodes;
     nodes = previousNodes;
     previousNodes = previousNodesTempHolder;
@@ -549,12 +563,13 @@ previousButton.addEventListener('click', function (event) {
     SetDefaultLayout();
     UpdateTableRows();
     draw(false);
+}
+var homeButton = document.getElementById('home-view');
+homeButton.addEventListener('click', function(event){
+HomeButton();
 });
 
-
-var homeButton = document.getElementById('home-view');
-
-homeButton.addEventListener('click', function (event) {
+function HomeButton(){
     nodes = originalViewNodes
     SetHomepageDetails();
     tempNewNodes = [];
@@ -563,10 +578,15 @@ homeButton.addEventListener('click', function (event) {
     SetDefaultLayout();
     UpdateTableRows();
     draw(false);
-});
+}
 
 ///The DRAWING METHOD!!!
-function draw(setLeft) {
+function draw() {
+
+   // var singleNodeBuffer = (canvas.width - nodes[0].width) / 2;
+    var doubleNodeBuffer = (canvas.width - (nodes[0].width * 2)) / 3;
+    var nodeWidth = nodes[0].width;
+
     if (nodes == null || nodes === undefined) {
         console.log('Not loaded yet');
         return;
@@ -640,12 +660,23 @@ function draw(setLeft) {
 
     //make centers for the rectangle
     for (i = 0; i < nodes.length; i++) {
-        console.log("small screen");
         if (nodes[i].Id === 6) {
-            nodes[i].left = (canvas.width / 20);
+            var rightBufffer = (canvas.width - (doubleNodeBuffer + nodeWidth))            
+            var buffer = 75;
+
+            if(canvas.width < 600){
+                buffer = 40;
+            }
+
+            if(canvas.width > 800){
+                buffer = 150;
+            }
+            var leftBuffer = rightBufffer - nodeWidth - buffer;
+            nodes[i].left = leftBuffer;
         }
         if (nodes[i].Id === 7) {
-            nodes[i].left = (canvas.width - (130 + (canvas.width / 5)));
+            var rightBufffer = (canvas.width - (doubleNodeBuffer + nodeWidth))
+            nodes[i].left = rightBufffer;
         }
         var center = { x: (nodes[i].left + (nodes[i].width / 2)), y: (nodes[i].top + (nodes[i].height / 2)) }
         nodes[i].x = center.x;
