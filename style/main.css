@@ -39,6 +39,10 @@
    margin-bottom: 0px;
 }
 
+.less-margin-top{
+   margin-top: 0px;
+}
+
 .padding-right-reduced{
    padding-right: 12px !important;
 }
@@ -61,6 +65,10 @@
 
 .more-more-margin-top{
    margin-top: 12px;
+}
+
+.margin-left{
+   margin-left: 16px;;
 }
 
 .footer-div{
