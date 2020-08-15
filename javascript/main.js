@@ -447,32 +447,53 @@ function textHittest(x, y, node) {
     return (y > node.top && y < node.top + node.height && x > node.left && x < node.left + node.width);
 }
 
-
 ///Mouse Type Events
 elem.addEventListener('click', function (event) {
     event.preventDefault();
+    // console.log("Here the numbers for the click");
+    // console.log("x offset = " + offsetX);
+    // console.log("y offset = " + offsetY);
+    // console.log("event x ="  + event.clientX);
+    // console.log("event y ="  + event.clientY);
+    canvasOffset = canvas.getBoundingClientRect();   
     x = parseInt(event.clientX - offsetX);
-    y = parseInt(event.clientY - offsetY);
+    y = parseInt(event.clientY - canvasOffset.top);
     var looking = true;
-
+    // console.log("x = " + x);
+    // console.log("y = " + y);
     nodes.forEach(function (element) {
+        //console.log(element);
         if (y > element.top && y < element.top + element.height && x > element.left && x < element.left + element.width && looking) {
             looking = false;
+            // console.log("element that is hit");
+            // console.log(element);
             UpdateNodesOnZoom(element);
         }
     });
 }, false);
 
 window.addEventListener('resize', function (event) {
-    event.preventDefault();
+    //console.log("windows resize");
+    if(window.innerWidth > 768 && window.innerWidth < 992){
+        console.log(window.innerWidth);
+    }
+  
+    HandleResize(event);
+});
+
+function HandleResize(event){
+    //event.preventDefault();
     canvas.width = parent.offsetWidth;
     canvas.height = parent.offsetHeight; 
-    canvasOffset = canvas.getBoundingClientRect();   
-    offsetX = canvasOffset.left + window.scrollX;
-    offsetY = canvasOffset.top + window.scrollY;
+    //console.log(parent.offsetHeight);
+     canvasOffset = canvas.getBoundingClientRect();   
+    // console.log(canvasOffset.top);
+    // offsetX = canvasOffset.left + window.scrollX;
+     offsetY = canvasOffset.top + window.scrollY;
+    // console.log(offsetY);
     SetDefaultLayout();
     draw(false);
-});
+}
 
 //Mouse is down do this tuff
 // elem.addEventListener('mousedown', function (event) {
@@ -595,7 +616,7 @@ function draw() {
 
     var supersSmallScreen = (canvas.width < 380);
 
-   // var singleNodeBuffer = (canvas.width - nodes[0].width) / 2;
+    var singleNodeBuffer = (canvas.width - nodes[0].width) / 2;
     var doubleNodeBuffer = (canvas.width - (nodes[0].width * 2)) / 3;
     var nodeWidth = nodes[0].width;
 
@@ -680,8 +701,8 @@ function draw() {
     for (i = 0; i < nodes.length; i++) {
         var superSmallScreen = (canvas.width < 380);
         var rightBufffer = (canvas.width - (doubleNodeBuffer + nodeWidth))   
-       
-        console.log(canvas.width);
+           
+
         if (nodes[i].Id === 6) {
                   
             var buffer = 75;
@@ -704,6 +725,10 @@ function draw() {
         if (nodes[i].Id === 7) {
             var rightBufffer = (canvas.width - (doubleNodeBuffer + nodeWidth))
             nodes[i].left = rightBufffer;
+        }
+
+        if(nodes.length === 1){
+            nodes[i].left = singleNodeBuffer;
         }
         var center = { x: (nodes[i].left + (nodes[i].width / 2)), y: (nodes[i].top + (nodes[i].height / 2)) }
         nodes[i].x = center.x;
