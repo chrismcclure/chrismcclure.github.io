@@ -36,11 +36,19 @@
 }
 
 .less-margin-bottom{
-   margin-bottom: 0px;
+   margin-bottom: 0px !important;
 }
 
 .less-margin-top{
    margin-top: 0px;
+}
+
+.tiny-margin-top{
+   margin-top: 6px !important;
+}
+
+.no-margin{
+   margin: 0 !important;
 }
 
 .padding-right-reduced{
@@ -56,7 +64,7 @@
 }
 
 .not-bold{
-   font-weight: 300;
+   font-weight: 300 !important;
 }
 
 .more-margin-top{
