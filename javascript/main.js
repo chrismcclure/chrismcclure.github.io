@@ -44,7 +44,7 @@ Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
         if (nodes.length > 0) {
 
             for (i = 0; i < nodes.length; i++) {
-                nodes[i].width = 160;
+                nodes[i].width = 150;
                 nodes[i].height = 70;
             }
             SetHomepageDetails();
@@ -219,10 +219,10 @@ function AddDataToMobilePanel(issue) {
     var button = document.createElement("a");   
     var buttonHtml = '';
     if (issue.open) {
-        buttonHtml = '<a href="issue.html?Id=' + issue.id + '" class="btn btn-primary btn-lg">Open Issue</a>';
+        buttonHtml = '<a href="issue.html?Id=' + issue.id + '" class="btn btn-primary btn-lg more-more-margin-top">Open Issue</a>';
     }
     else {
-        buttonHtml = '<a class="btn btn-primary btn-lg disabled">Open Issue</a>';
+        buttonHtml = '<a class="btn btn-primary btn-lg disabled more-more-margin-top">Open Issue</a>';
         panelHeaderText.setAttribute("id", "panel-title");
     }
     button.innerHTML = buttonHtml;
@@ -393,6 +393,10 @@ function GetChild(element, level) {
 function SetDefaultLayout() {
     var singleNodeBuffer = (canvas.width - nodes[0].width) / 2;
     var doubleNodeBuffer = (canvas.width - (nodes[0].width * 2)) / 3;
+
+    var superSmallScreen = (canvas.width < 380)
+
+    
     var nodeWidth = nodes[0].width;
     
     for (let i = 0; i < nodes.length; i++) {
@@ -418,8 +422,14 @@ function SetDefaultLayout() {
     for (let i = 1; i < 5; i++) {
         var levelNodes = nodes.filter(x => x.level == i);
         if (levelNodes.length == 2 && ((levelNodes[0].parent != levelNodes[1].parent) || i == 2)) {
-            AdjustWidth(levelNodes[0].Id, doubleNodeBuffer);
-            AdjustWidth(levelNodes[1].Id, (doubleNodeBuffer * 2) + nodeWidth);
+            if(superSmallScreen){
+                AdjustWidth(levelNodes[0].Id, doubleNodeBuffer - 18);
+                AdjustWidth(levelNodes[1].Id, (doubleNodeBuffer * 2) + nodeWidth);
+            }else{
+                AdjustWidth(levelNodes[0].Id, doubleNodeBuffer);
+                AdjustWidth(levelNodes[1].Id, (doubleNodeBuffer * 2) + nodeWidth);
+            }
+            
         }      
     }    
 }
@@ -583,6 +593,8 @@ function HomeButton(){
 ///The DRAWING METHOD!!!
 function draw() {
 
+    var supersSmallScreen = (canvas.width < 380);
+
    // var singleNodeBuffer = (canvas.width - nodes[0].width) / 2;
     var doubleNodeBuffer = (canvas.width - (nodes[0].width * 2)) / 3;
     var nodeWidth = nodes[0].width;
@@ -601,10 +613,16 @@ function draw() {
     // var viewName = overviewNode.Name + " Organization View"
     // c.fillText(viewName, canvas.width / 3.2, 25)
 
+    var yOfLegend = 465;
     //Set the legend on the top left
-    c.font = "16px Calibri";
+    if(supersSmallScreen){
+        c.font = "14px Segoe UI";
+    }else{
+        c.font = "15px Segoe UI";
+    }
+    
     //Green Circle
-    c.arc(15, (canvas.height - 20), 12, 0, Math.PI * 2, false);
+    c.arc(170, yOfLegend, 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = greenCircle;
     c.fill();
@@ -612,15 +630,15 @@ function draw() {
     c.beginPath();
 
     //Red Circle
-    c.arc(160, (canvas.height - 20), 12, 0, Math.PI * 2, false);
+    c.arc(15, yOfLegend, 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = redCircle;
     c.fill();
     c.stroke();
     c.beginPath();
     c.fillStyle = black;
-    c.fillText("Resolved Issues", 35, (canvas.height - 15))
-    c.fillText("Unresolved Issues", 180, (canvas.height - 15))
+    c.fillText("Resolved Issues", 190, yOfLegend + 4)
+    c.fillText("Unresolved Issues", 35, yOfLegend + 4)
     c.beginPath();
 
     //Create objects for the buttons
@@ -660,8 +678,12 @@ function draw() {
 
     //make centers for the rectangle
     for (i = 0; i < nodes.length; i++) {
+        var superSmallScreen = (canvas.width < 380);
+        var rightBufffer = (canvas.width - (doubleNodeBuffer + nodeWidth))   
+       
+        console.log(canvas.width);
         if (nodes[i].Id === 6) {
-            var rightBufffer = (canvas.width - (doubleNodeBuffer + nodeWidth))            
+                  
             var buffer = 75;
 
             if(canvas.width < 600){
@@ -671,7 +693,12 @@ function draw() {
             if(canvas.width > 800){
                 buffer = 150;
             }
+
             var leftBuffer = rightBufffer - nodeWidth - buffer;
+            if(superSmallScreen){
+                leftBuffer = doubleNodeBuffer - 18;
+            }
+          
             nodes[i].left = leftBuffer;
         }
         if (nodes[i].Id === 7) {
@@ -713,7 +740,7 @@ function draw() {
         //Draw the red circle  otherwise known as issues
         //c.moveTo(tempRectangle.x -40, tempRectangle.y + 10);
         c.beginPath();
-        c.arc(tempRectangle.x - 65, tempRectangle.y + 15, 12, 0, Math.PI * 2, false);
+        c.arc(tempRectangle.x - 60, tempRectangle.y + 15, 12, 0, Math.PI * 2, false);
         c.strokeStyle = black;
         c.fillStyle = redCircle;
         c.fill();
@@ -723,17 +750,17 @@ function draw() {
         var issuesText = new String(tempRectangle.issues);
         var issueResolvedY = tempRectangle.y + 20;
         if (issuesText.length == 2) {
-            c.fillText(tempRectangle.issues, tempRectangle.x - 74, issueResolvedY)
+            c.fillText(tempRectangle.issues, tempRectangle.x - 70, issueResolvedY)
         }
         if (issuesText.length == 1) {
-            c.fillText(tempRectangle.issues, tempRectangle.x - 69, issueResolvedY)
+            c.fillText(tempRectangle.issues, tempRectangle.x - 64, issueResolvedY)
         }
         c.beginPath();
 
         //Draw the green circle otherwise known as resolved
         //c.moveTo(tempRectangle.x -10, tempRectangle.y + 10);
         c.beginPath();
-        c.arc(tempRectangle.x - 37, tempRectangle.y + 15, 12, 0, Math.PI * 2, false);
+        c.arc(tempRectangle.x - 32, tempRectangle.y + 15, 12, 0, Math.PI * 2, false);
         c.strokeStyle = black;
         c.fillStyle = greenCircle;
         c.fill();
@@ -744,15 +771,15 @@ function draw() {
         c.fillStyle = black;
         var resolvedText = new String(tempRectangle.resolved);
         if (resolvedText.length == 2) {
-            c.fillText(tempRectangle.resolved, tempRectangle.x - 45, issueResolvedY)
+            c.fillText(tempRectangle.resolved, tempRectangle.x - 40, issueResolvedY)
         }
         if (resolvedText.length == 1) {
-            c.fillText(tempRectangle.resolved, tempRectangle.x - 40, issueResolvedY)
+            c.fillText(tempRectangle.resolved, tempRectangle.x - 36, issueResolvedY)
         }
         c.beginPath();
         c.fillStyle = 'black';
-        c.fillText(nodes[i].Name, nodes[i].x - 75, nodes[i].y - 22);
-        c.fillText(nodes[i].Title, nodes[i].x - 75, nodes[i].y - 5);
+        c.fillText(nodes[i].Name, nodes[i].x - 70, nodes[i].y - 22);
+        c.fillText(nodes[i].Title, nodes[i].x - 70, nodes[i].y - 5);
         c.beginPath();
     }
 }
