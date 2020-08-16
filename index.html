@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css?13454">
+    <link rel="stylesheet" type="text/css" href="style/main.css?1344454">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -61,26 +61,21 @@
     </nav>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12 text-center" id="text-holder">
+            <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12 text-center" id="text-holder">
                 <h1 class="zero-top-margin"><span id="title-name">Temp</span> Overview</h1>
                 <h4>Issues Date Range: <span id="date-range"></span> </h4>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-5 col-sm-12 left-half" id="parent">
+            <div class="col-md-5 col-sm-12 col-lg-5 left-half" id="parent">
                 <div class="text-md-left text-center">
                     <button class="btn btn-primary" id="home-view">All Nodes</button>
                     <button class="btn btn-info" id="previous-view">Previous</button>
                     <button class="btn btn-default hidden-sm hidden-xs" id="open-issue">Open FullTable</button>
                 </div>
-                <!-- <div class="text-center hidden-md hidden-lg hidden-xl">
-                    <button class="btn btn-primary" id="home-view-2">All Nodes</button>
-                    <button class="btn btn-info" id="previous-view-2">Previous</button>
-
-                </div> -->
                 <Canvas id="myCanvas"></Canvas>
             </div>
-            <div class="col-md-7 hidden-xs">
+            <div class="col-md-7 col-sm-12 col-lg-7 hidden-xs">
                 <table id="myTable" class="table table-sm table-bordered table-responsive">
                     <thead class="theader-background-black white-text">
                         <tr>
@@ -95,15 +90,14 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-sm-12 hidden-sm hidden-md hidden-lg hidden-xl">
+            <div class="col-sm-12  hidden-sm hidden-md hidden-lg hidden-xl">
                 <h2 class="text-center zero-top-margin">Issues</h2>
                 <div id="panel-holder-div"></div>
             </div>
-          
         </div>
         <div class="row">
             <div class="col-sm-12 col-lg-12 text-right footer-div">
-                    <button class="btn btn-warning" id="clear-storage">Clear Storage</button>
+                <button class="btn btn-warning" id="clear-storage">Clear Storage</button>
             </div>
         </div>
         <script src="javascript/main.js?1356544"></script>

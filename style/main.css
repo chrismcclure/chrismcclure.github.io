@@ -3,11 +3,10 @@
    height: 520px;   
    overflow-x:hidden;
    overflow-y:hidden;
-    width:100%;
-   /* You may also want to try adding:*/
-    margin: 0;
-    padding: 0;
-   /* background-color: royalblue;*/
+   width:100%;
+   margin: 0;
+   padding: 0;
+   margin-bottom: 24px;
 }
 
 .theader-background-primary{
