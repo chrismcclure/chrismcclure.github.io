@@ -33,6 +33,7 @@ var tempNewNodes = [];
 var previousNodes = [];
 var previousNodesTempHolder = [];
 var originalViewNodes = [];
+var images = [];
 
 ///Parse the files
 Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
@@ -806,5 +807,11 @@ function draw() {
         c.fillText(nodes[i].Name, nodes[i].x - 70, nodes[i].y - 22);
         c.fillText(nodes[i].Title, nodes[i].x - 70, nodes[i].y - 5);
         c.beginPath();
+
+        //Draw the image
+        var imageFilePath = "assets/" + nodes[i].image;
+        console.log(imageFilePath);
+        var image = new Image(imageFilePath);
+        console.log(image);
     }
 }

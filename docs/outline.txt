@@ -1,31 +1,9 @@
-What to do I need to do to get first interation done functional wise?
-This doesn't count layout or pretty wise
+Next round of add
 
-1)Main page
-    Other than look and layout, this page is done
-2) Open full table
-    A) need to fill in all data for each issues. The detaisl would be awesome
-3) Create issues   
-    A)Logic for issue type
-        1)Direct report
-            Leader to notify goes away
-            employee involed are only her employees
-
-        2) Self, then show 
-            leader to notify stays
-            and employee involed goes away
-
-        3) Another emploee 
-            leader to notify goes away
-            and employee involed are not her employees (can be anyone)
-            The owner of the issue is the leader for the emploee
-
-                Where does this display?
-                Talbe able issues she created but doesn't own?  display in her table, but different owner and she is creator?
-
-        4) Leader   
-            employees turns to leader involed and is a select list
-            leader to notify stays there
-        About another employee
-
-4) Open issue needs to read a couple issues from files and display them
+1) colors for each node
+2) color of lines for each node
+3) Demo pages of for level 2
+4) Demo page for level 3
+5) Demo page for level 4
+6) Demo emails
+7) Pictures to the nodes
