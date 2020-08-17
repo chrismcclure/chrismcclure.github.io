@@ -45,12 +45,12 @@ Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
         if (nodes.length > 0) {
 
             for (i = 0; i < nodes.length; i++) {
-                nodes[i].width = 150;
+                nodes[i].width = 175;
                 nodes[i].height = 70;
             }
             SetHomepageDetails();
             tempNewNodes = [];
-            tempNewNodes.push(nodes[0]);
+            //tempNewNodes.push(nodes[0]);
             GetChild(nodes[0], 1);
             nodes = tempNewNodes;
             StoreDirectReports();
@@ -424,7 +424,7 @@ function SetDefaultLayout() {
         var levelNodes = nodes.filter(x => x.level == i);
         if (levelNodes.length == 2 && ((levelNodes[0].parent != levelNodes[1].parent) || i == 2)) {
             if(superSmallScreen){
-                AdjustWidth(levelNodes[0].Id, doubleNodeBuffer - 18);
+                AdjustWidth(levelNodes[0].Id, doubleNodeBuffer - 0);
                 AdjustWidth(levelNodes[1].Id, (doubleNodeBuffer * 2) + nodeWidth);
             }else{
                 AdjustWidth(levelNodes[0].Id, doubleNodeBuffer);
@@ -638,9 +638,9 @@ function draw() {
     var yOfLegend = 465;
     //Set the legend on the top left
     if(supersSmallScreen){
-        c.font = "14px Segoe UI";
+        c.font = "13px Segoe UI";
     }else{
-        c.font = "15px Segoe UI";
+        c.font = "14px Segoe UI";
     }
     
     //Green Circle
@@ -718,7 +718,7 @@ function draw() {
 
             var leftBuffer = rightBufffer - nodeWidth - buffer;
             if(superSmallScreen){
-                leftBuffer = doubleNodeBuffer - 18;
+                leftBuffer = doubleNodeBuffer - 0;
             }
           
             nodes[i].left = leftBuffer;
@@ -741,10 +741,15 @@ function draw() {
         if (nodes[i].parent === 0 || i === 0) {
             continue;
         }
+        c.beginPath();     
         c.moveTo(nodes[i].x, nodes[i].y);
         var parent = nodes.find(o => o.Id === nodes[i].parent);
         c.lineTo(parent.x, parent.y);
-        c.strokeStyle = 'black';
+        if(nodes[i].issues > nodes[i].resolved){
+            c.strokeStyle = 'red';
+        }else{
+            c.strokeStyle = 'black';
+        }      
         c.stroke();
     }
 
@@ -757,8 +762,32 @@ function draw() {
         c.strokeStyle = black;
         c.strokeRect(tempRectangle.left, tempRectangle.top, tempRectangle.width, tempRectangle.height);
         c.rect(tempRectangle.left, tempRectangle.top, tempRectangle.width, tempRectangle.height);
-        c.fillStyle = grey;
-        c.fill();
+        if(i === 0){
+            c.fillStyle = white;
+            c.fill();
+        }else{
+
+                var resolved = tempRectangle.resolved;
+                var issues = tempRectangle.issues;
+                if(resolved > issues){
+                    c.fillStyle = "#76FC9D";
+                   
+                }
+                if(issues === resolved){
+                    c.fillStyle = "yellow";
+                  
+                }
+                if(issues > resolved){
+                    c.fillStyle = "#FFFF99";
+                   
+                }
+                if(issues > (resolved * 2)){
+                    c.fillStyle = "#F08080";
+                }
+                c.fill();
+        }
+       
+       
         //Commented this out and it looks good, not sure why
         //c.fillStyle = black;
         //c.stroke();
@@ -766,7 +795,7 @@ function draw() {
         //Draw the red circle  otherwise known as issues
         //c.moveTo(tempRectangle.x -40, tempRectangle.y + 10);
         c.beginPath();
-        c.arc(tempRectangle.x - 60, tempRectangle.y + 15, 12, 0, Math.PI * 2, false);
+        c.arc(tempRectangle.x -8, tempRectangle.y + 15, 12, 0, Math.PI * 2, false);
         c.strokeStyle = black;
         c.fillStyle = redCircle;
         c.fill();
@@ -776,17 +805,17 @@ function draw() {
         var issuesText = new String(tempRectangle.issues);
         var issueResolvedY = tempRectangle.y + 20;
         if (issuesText.length == 2) {
-            c.fillText(tempRectangle.issues, tempRectangle.x - 70, issueResolvedY)
+            c.fillText(tempRectangle.issues, tempRectangle.x - 18, issueResolvedY)
         }
         if (issuesText.length == 1) {
-            c.fillText(tempRectangle.issues, tempRectangle.x - 64, issueResolvedY)
+            c.fillText(tempRectangle.issues, tempRectangle.x -13, issueResolvedY)
         }
         c.beginPath();
 
         //Draw the green circle otherwise known as resolved
         //c.moveTo(tempRectangle.x -10, tempRectangle.y + 10);
         c.beginPath();
-        c.arc(tempRectangle.x - 32, tempRectangle.y + 15, 12, 0, Math.PI * 2, false);
+        c.arc(tempRectangle.x  + 19 , tempRectangle.y + 15, 12, 0, Math.PI * 2, false);
         c.strokeStyle = black;
         c.fillStyle = greenCircle;
         c.fill();
@@ -797,21 +826,42 @@ function draw() {
         c.fillStyle = black;
         var resolvedText = new String(tempRectangle.resolved);
         if (resolvedText.length == 2) {
-            c.fillText(tempRectangle.resolved, tempRectangle.x - 40, issueResolvedY)
+            c.fillText(tempRectangle.resolved, tempRectangle.x + 11, issueResolvedY)
         }
         if (resolvedText.length == 1) {
-            c.fillText(tempRectangle.resolved, tempRectangle.x - 36, issueResolvedY)
+            c.fillText(tempRectangle.resolved, tempRectangle.x + 15, issueResolvedY)
         }
         c.beginPath();
         c.fillStyle = 'black';
-        c.fillText(nodes[i].Name, nodes[i].x - 70, nodes[i].y - 22);
-        c.fillText(nodes[i].Title, nodes[i].x - 70, nodes[i].y - 5);
+        c.fillText(nodes[i].Name, nodes[i].x - 16, nodes[i].y - 16);
+        c.fillText(nodes[i].Title, nodes[i].x - 16, nodes[i].y - 0);
         c.beginPath();
 
-        //Draw the image
-        var imageFilePath = "assets/" + nodes[i].image;
-        console.log(imageFilePath);
-        var image = new Image(imageFilePath);
-        console.log(image);
+      
+       
+      
     }
+
+   
+    var parent = document.getElementById("image-span");
+    parent.innerHTML = '';
+    for (i = 0; i < nodes.length; i++) {
+        //Draw the image
+        //var imageFilePath = "https://chrismcclure.github.io/assets/" + nodes[i].image;
+        var imageFilePath = "assets/" + nodes[i].image;
+        var image = new Image();
+        var htmlImage = document.createElement("img");
+        htmlImage.setAttribute("src", imageFilePath);
+        htmlImage.style = "position:absolute; left: " + (nodes[i].left + 20) + "px; top:" + (nodes[i].top + 38) + "px; height: 60px; width: 60px; border: 1px solid black;";
+        parent.appendChild(htmlImage);
+        image.src = imageFilePath;
+        images.push(image);
+    }
+  
 }
+
+
+// function loadAllImages(){
+//     var assetFolder = "assets/";
+//     var bettyFile = assetFolder + "Betty.PNG"
+// }
