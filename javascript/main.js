@@ -34,6 +34,8 @@ var previousNodes = [];
 var previousNodesTempHolder = [];
 var originalViewNodes = [];
 var images = [];
+var levelB = false;
+var levelBTempNodes = [];
 
 ///Parse the files
 Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
@@ -48,15 +50,18 @@ Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
                 nodes[i].width = 175;
                 nodes[i].height = 70;
             }
+            SetUserLevel();
             SetHomepageDetails();
             tempNewNodes = [];
             //tempNewNodes.push(nodes[0]);
             GetChild(nodes[0], 1);
             nodes = tempNewNodes;
             StoreDirectReports();
-            SetDefaultLayout();
-            loadIssues();
-            draw(false);
+            SetDefaultLayout();   
+            loadIssues();        
+            if(!levelB){              
+                draw(false);
+            }           
         }
         originalViewNodes = nodes;
     }
@@ -72,10 +77,58 @@ function loadIssues() {
             originalIssues = results.data;
             PullFromLocalStorage();
             AddDataToIssuesRecords(issues);
+            issues = issues.sort((a, b) => a.owner - b.owner);
             AddDataToTable(issues);
+            UpdateTableRows();
             AddHighestNumberToLocalStorage();
+            if (levelB){
+                FilterToLevelB();
+            }        
         }
     });
+}
+
+function SetUserLevel(){
+    var url = window.location.search;
+    var query = url.split('=');
+    var level = (query[query.length -1]);
+    if(level === 'B'){
+        levelB = true;
+    }
+}
+
+function FilterToLevelB(){    
+        levelB = true;
+        levelBTempNodes = nodes;       
+        console.log('load the page for mark');
+        var markNode =  nodes.find(o => o.Id === 5);
+        nodes = [];
+        FilterGetChild(markNode, 1);
+        SetHomepageDetails();
+        tempNewNodes = [];
+        GetChild(nodes[0], 1);        
+        nodes = tempNewNodes;       
+        originalViewNodes = tempNewNodes;
+        SetDefaultLayout();
+        UpdateTableRows();
+        draw(false);    
+}
+
+function FilterGetChild(element, level) {
+    var holder = levelBTempNodes; 
+    element.level = level;
+    nodes.push(element);
+    level++;
+    var children = holder.filter(x => x.parent == element.Id);
+    console.log(children);
+    if (children.length === 0) {
+        console.log('there are no childred');
+        return;
+    }
+    for (let i = 0; i < children.length; i++) {       
+
+        FilterGetChild(children[i], level);
+    }
 }
 
 function StoreDirectReports() {
@@ -156,12 +209,16 @@ function AddIssueToLocalStorage(issue) {
 function AddDataToTable(issues) {
     issuesOnScreen = [];
     var mainHolderDiv = document.getElementById("panel-holder-div");
-    mainHolderDiv.innerHTML = '';
+    mainHolderDiv.innerHTML = '';   
+    var tBodyElem = document.getElementById("table-data");
+    tBodyElem.innerHTML = '';
+    $('#myTable').dataTable().fnClearTable();  
+    issues = issues.sort((a, b) => a.owner - b.owner)
     for (let i = 0; i < issues.length; i++) {
         AddDataToRowToTable(issues[i]);
         AddIssueToLocalStorage(issues[i]);
         AddDataToMobilePanel(issues[i]);
-    }
+    }       
     $('#myTable').DataTable();
     //Update the date range
     var dates = issuesOnScreen.sort((a, b) => b.dateObject - a.dateObject);
@@ -267,6 +324,7 @@ function AddDataToRowToTable(issue) {
     var cell3 = document.createElement("td");
     var cell4 = document.createElement("td");
     var cell5 = document.createElement("td");
+    var cell6 = document.createElement("td");
     var textnode1 = document.createTextNode(owner);
     var textnode2 = document.createTextNode(issue.title);
     var textnode3 = document.createTextNode(issue.date);
@@ -277,6 +335,7 @@ function AddDataToRowToTable(issue) {
     else {
         textnode4 = document.createTextNode(issue.status);
     }
+    var textnode6 = document.createTextNode(issue.emp);
 
     var buttonHtml = '';
     if (issue.open) {
@@ -291,12 +350,15 @@ function AddDataToRowToTable(issue) {
     cell3.appendChild(textnode3);
     cell4.appendChild(textnode4);
     cell5.innerHTML = textnode5;
+    cell6.appendChild(textnode6);
     row.appendChild(cell1);
     row.appendChild(cell2);
     row.appendChild(cell3);
     row.appendChild(cell4);
+    row.appendChild(cell6);
     row.appendChild(cell5);
-    tBodyElem.appendChild(row);
+    //tBodyElem.appendChild(row);
+    $('#myTable').dataTable().fnAddData(row);
 }
 
 function AddDataToIssuesRecords(issues) {
@@ -835,14 +897,8 @@ function draw() {
         c.fillStyle = 'black';
         c.fillText(nodes[i].Name, nodes[i].x - 16, nodes[i].y - 16);
         c.fillText(nodes[i].Title, nodes[i].x - 16, nodes[i].y - 0);
-        c.beginPath();
-
-      
-       
-      
-    }
-
-   
+        c.beginPath();                   
+    }   
     var parent = document.getElementById("image-span");
     parent.innerHTML = '';
     for (i = 0; i < nodes.length; i++) {
@@ -852,12 +908,11 @@ function draw() {
         var image = new Image();
         var htmlImage = document.createElement("img");
         htmlImage.setAttribute("src", imageFilePath);
-        htmlImage.style = "position:absolute; left: " + (nodes[i].left + 20) + "px; top:" + (nodes[i].top + 38) + "px; height: 60px; width: 60px; border: 1px solid black;";
+        htmlImage.style = "position:absolute; left: " + (nodes[i].left + 20) + "px; top:" + (nodes[i].top + 119) + "px; height: 60px; width: 60px; border: 1px solid black;";
         parent.appendChild(htmlImage);
         image.src = imageFilePath;
         images.push(image);
-    }
-  
+    }  
 }
 
 

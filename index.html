@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css?144344454">
+    <link rel="stylesheet" type="text/css" href="style/main.css?1443555454">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -48,7 +48,7 @@
                                 class="btn btn-primary navbar-btn">Create
                                 Issue</button></a>
                     </li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </ul>
                 <form class="navbar-form navbar-right" action="/action_page.php">
                     <div class="form-group">
@@ -59,16 +59,12 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12 text-center" id="text-holder">
-                <h1 class="zero-top-margin"><span id="title-name">Temp</span> Overview</h1>
-                <h4>Issues Date Range: <span id="date-range"></span> </h4>
-            </div>
-        </div>
+    <div class="container-fluid">        
         <div class="row">
             <div class="col-md-5 col-sm-12 col-lg-5 left-half" id="parent">
                 <div class="text-md-left text-center">
+                    <h1 class="zero-top-margin"><span id="title-name">Temp</span> Overview</h1>
+                    <h4>Issues Date Range: <span id="date-range"></span> </h4>
                     <button class="btn btn-primary" id="home-view">All Nodes</button>
                     <button class="btn btn-info" id="previous-view">Previous</button>
                     <button class="btn btn-default hidden-sm hidden-xs" id="open-issue">Open FullTable</button>
@@ -84,6 +80,7 @@
                             <th>Title</th>
                             <th>Date</th>
                             <th>Status</th>
+                            <th>Employee</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -102,6 +99,7 @@
             </div>
         </div>
         <script src="javascript/main.js?1356544"></script>
+    </div>
 </body>
 
 </html>

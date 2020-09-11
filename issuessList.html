@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css?1346355">
+    <link rel="stylesheet" type="text/css" href="style/main.css?1546355">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -46,7 +46,7 @@
                                 class="btn btn-primary navbar-btn">Create
                                 Issue</button></a>
                     </li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </ul>
                 <form class="navbar-form navbar-right" action="/action_page.php">
                     <div class="form-group">
@@ -60,8 +60,10 @@
         <div class="row">
             <div class=" col-md-12 col-sm-12 right-half">
                 <h2 class="text-center zero-top-margin"><span id="title-name">Temp</span> Issues</h2>
-                <h4 class="text-center">Date Range <span id="date-range"></span></h4>
-                <table id="myTable" class="table table-sm table-bordered">
+                <p class="text-center zero-top-margin"><img class="head-image" id="image" height="100" width="100"/></p>
+                <p  class="text-center zero-top-margin"> Unresolved: <span id="unresolved"></span> Resolved: <span id="resolved"></span></p>
+                <p class="text-center zero-top-margin">Date Range <span id="date-range"></span></p>
+                <table id="myTable" class="table table-sm table-bordered zero-top-margin">
                     <thead class="theader-background-black white-text">
                         <tr>
                             <th>Issue Owner</th>

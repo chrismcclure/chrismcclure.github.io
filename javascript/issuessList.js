@@ -5,9 +5,10 @@ var issuesFile = 'files/issues.csv';
 var originalViewNodes = [];
 var nodes = [];
 var tempNewNodes = [];
-var overviewNode;
+var overviewNode = {};
 var maxIdKey = 'MaxId';
 var maxIdFromFileKey = 'MaxIdFromFile';
+var UserLevelD = false;
 
 ///Parse the files
 Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
@@ -23,10 +24,18 @@ Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
                 nodes[i].height = 70;
             }          
             SetHomepageDetails();
-            tempNewNodes = [];          
-            GetChild(overviewNode, 1);           
-            nodes = tempNewNodes;
-            loadIssues();
+            tempNewNodes = [];    
+            if(UserLevelD){
+                tempNewNodes.push(overviewNode);
+                nodes = tempNewNodes;
+                loadIssues();
+            }
+            else{
+                     
+                GetChild(overviewNode, 1);           
+                nodes = tempNewNodes;
+                loadIssues();
+            }            
         }
         originalViewNodes = nodes; 
     }
@@ -51,8 +60,27 @@ function SetHomepageDetails(){
         var url = window.location.search;
         var query = url.split('=');
         var idToGet = (query[query.length -1]);
-        overviewNode = nodes.find(o => o.Id == idToGet);                 
+        
+        if(idToGet === '100'){
+            UserLevelD = true;
+            overviewNode = {
+                id : 100,
+                Name : 'Jim Wiggum',
+                issueOwner :' Laurie Gumble',
+                image : "Jim.PNG"
+            };
+        }
+        else{
+            overviewNode = nodes.find(o => o.Id == idToGet);                 
+          
+        }       
         UpdateTableTitle(overviewNode);
+        SetImage();
+}
+
+function SetImage(){
+    var image = document.getElementById('image');
+    image.src = "assets/" + overviewNode.image;
 }
 
 function loadIssues(){
@@ -66,8 +94,21 @@ function loadIssues(){
         PullFromLocalStorage();         
         AddDataToIssuesRecords(issues);    
         AddDataToTable(issues);     
+        PopulateNumbers(issues);
         }
     });
+}
+
+function PopulateNumbers(){
+    console.log(issuesOnScreen);
+    var resolved = issuesOnScreen.filter(x => x.status === null);
+    var unresolved = issuesOnScreen.filter(x => x.status !== null);
+
+    var resolvedElement = document.getElementById('resolved');
+    resolvedElement.textContent = resolved.length;
+
+    var unresolvedElement = document.getElementById('unresolved');
+    unresolvedElement.textContent = unresolved.length;
 }
 
 function PullFromLocalStorage(){
@@ -137,13 +178,27 @@ function UpdateTableTitle(node){
 }
 
 function AddDataToRowToTable(issue) {    
-    var issueOwner = nodes.filter(x => x.Id == issue.owner); 
+    var issueOwner;
+    if(UserLevelD){
+        console.log(nodes);
+        console.log(issue);
+        issueOwner   = nodes.filter(x => x.Name === issue.emp); 
+    }else{       
+        issueOwner  = nodes.filter(x => x.Id == issue.owner); 
+    }
+    
+    
     if(issueOwner.length == 0){
         return;
     }
     //This array is cleared and updated in AddDateToTable  method
     issuesOnScreen.push(issue);
-    var owner = issueOwner[0].Name;    
+    var owner;
+    if(UserLevelD){
+        owner = issueOwner[0].issueOwner;  
+    }else{
+        owner = issueOwner[0].Name;  
+    }   
     var tBodyElem = document.getElementById("table-data");
     //If you want to add more. Make it an Array!
     var row = document.createElement("tr");
