@@ -1,7 +1,8 @@
-var issues = [];
-var originalIssues = [];
+var items= [];
+var originalitems= [];
 var csvFilePath = 'files/default.csv';
-var issuesFile = 'files/issues.csv';
+var itemsFile = 'files/items.csv';
+var itemsTypesFile = 'files/itemType.csv';
 var originalViewNodes = [];
 var nodes = [];
 var tempNewNodes = [];
@@ -9,6 +10,7 @@ var overviewNode = {};
 var maxIdKey = 'MaxId';
 var maxIdFromFileKey = 'MaxIdFromFile';
 var UserLevelD = false;
+var itemTypes = [];
 
 ///Parse the files
 Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
@@ -28,13 +30,13 @@ Papa.parse(csvFilePath +"?_="+ (new Date).getTime(), {
             if(UserLevelD){
                 tempNewNodes.push(overviewNode);
                 nodes = tempNewNodes;
-                loadIssues();
+                loadItems();
             }
             else{
                      
                 GetChild(overviewNode, 1);           
                 nodes = tempNewNodes;
-                loadIssues();
+                loadItems();
             }            
         }
         originalViewNodes = nodes; 
@@ -66,7 +68,7 @@ function SetHomepageDetails(){
             overviewNode = {
                 id : 100,
                 Name : 'Jim Wiggum',
-                issueOwner :' Laurie Gumble',
+                itemOwner :' Laurie Gumble',
                 image : "Jim.PNG"
             };
         }
@@ -83,26 +85,34 @@ function SetImage(){
     image.src = "assets/" + overviewNode.image;
 }
 
-function loadIssues(){
-    Papa.parse(issuesFile+"?_="+ (new Date).getTime(), {
+function loadItems() {
+    Papa.parse(itemsTypesFile + "?_=" + (new Date).getTime(), {
         header: true,
         download: true,
         dynamicTyping: true,
         complete: function (results) {
-        issues = results.data; 
-        originalIssues = results.data;  
-        PullFromLocalStorage();         
-        AddDataToIssuesRecords(issues);    
-        AddDataToTable(issues);     
-        PopulateNumbers(issues);
+            itemTypes = results.data;
+            Papa.parse(itemsFile + "?_=" + (new Date).getTime(), {
+                header: true,
+                download: true,
+                dynamicTyping: true,
+                complete: function (results) {
+                    items = results.data;
+                    originalitems = results.data;
+                    PullFromLocalStorage();
+                    AddDataToItemssRecords(items);
+                    AddDataToTable(items);
+                    PopulateNumbers(items);
+                }
+            });
         }
     });
 }
 
 function PopulateNumbers(){
-    console.log(issuesOnScreen);
-    var resolved = issuesOnScreen.filter(x => x.status === null);
-    var unresolved = issuesOnScreen.filter(x => x.status !== null);
+    console.log(itemsOnScreen);
+    var resolved = itemsOnScreen.filter(x => x.status === null);
+    var unresolved = itemsOnScreen.filter(x => x.status !== null);
 
     var resolvedElement = document.getElementById('resolved');
     resolvedElement.textContent = resolved.length;
@@ -120,16 +130,15 @@ function PullFromLocalStorage(){
         console.log('there is something in local storage!');
         for (let index = maxFileId + 1; index < maxId + 1; index++) {
             console.log(index);
-            var issue = JSON.parse(localStorage.getItem(index));
-            console.log(issue);
-            var issuestoAdd = {};
-            issuestoAdd.id = issue.id;
-            issuestoAdd.title = issue.title;
-            issuestoAdd.owner = issue.owner;
-            issuestoAdd.emp = issue.emp;
-            issuestoAdd.description = issue.description;
-            issues.push(issuestoAdd);    
-            console.log('add issued ' + issuestoAdd.title);        
+            var item = JSON.parse(localStorage.getItem(index)); 
+            var itemtoAdd = {};
+            itemtoAdd.id = item.id;
+            itemtoAdd.title = item.title;
+            itemtoAdd.owner = item.owner;
+            itemtoAdd.emp = item.emp;
+            itemtoAdd.description = item.description;
+            items.push(itemtoAdd);    
+            console.log('add item ' + itemtoAdd.title);        
         }
     }
     else{
@@ -155,14 +164,14 @@ function GetCurrentMaxFileId(){
     return parseInt(maxId);
 }
 
-function AddDataToTable(issues){
-    issuesOnScreen = [];    
-    for (let i = 0; i < issues.length; i++) {
-      AddDataToRowToTable(issues[i]);        
+function AddDataToTable(items){
+    itemsOnScreen = [];    
+    for (let i = 0; i < items.length; i++) {
+      AddDataToRowToTable(items[i]);        
     }
     //Update the date range
-    var dates = issuesOnScreen.sort((a, b) => b.dateObject - a.dateObject);  
-    var outPut = "No issues";
+    var dates = itemsOnScreen.sort((a, b) => b.dateObject - a.dateObject);  
+    var outPut = "No items";
     if(dates.length > 0 ) {
         outPut = FormatDate(dates[dates.length - 1].dateObject) + " to " + FormatDate(dates[0].dateObject);
     } 
@@ -174,30 +183,28 @@ function AddDataToTable(issues){
 function UpdateTableTitle(node){
     var titleSpan = document.getElementById('title-name');
     titleSpan.innerText = node.Name;
-    //Need some way to get all the children then make sure they are included in the issues
+    //Need some way to get all the children then make sure they are included in the items
 }
 
-function AddDataToRowToTable(issue) {    
-    var issueOwner;
-    if(UserLevelD){
-        console.log(nodes);
-        console.log(issue);
-        issueOwner   = nodes.filter(x => x.Name === issue.emp); 
+function AddDataToRowToTable(item) {    
+    var itemOwner;
+    if(UserLevelD){      
+        itemOwner   = nodes.filter(x => x.Name === item.emp); 
     }else{       
-        issueOwner  = nodes.filter(x => x.Id == issue.owner); 
+        itemOwner  = nodes.filter(x => x.Id == item.owner); 
     }
     
     
-    if(issueOwner.length == 0){
+    if(itemOwner.length == 0){
         return;
     }
     //This array is cleared and updated in AddDateToTable  method
-    issuesOnScreen.push(issue);
+    itemsOnScreen.push(item);
     var owner;
     if(UserLevelD){
-        owner = issueOwner[0].issueOwner;  
+        owner = itemOwner[0].itemOwner;  
     }else{
-        owner = issueOwner[0].Name;  
+        owner = itemOwner[0].Name;  
     }   
     var tBodyElem = document.getElementById("table-data");
     //If you want to add more. Make it an Array!
@@ -210,41 +217,43 @@ function AddDataToRowToTable(issue) {
     var cellButton = document.createElement("td");
     var cellStatus = document.createElement("td");
     var cellCreator = document.createElement("td");
+    var cellType = document.createElement("td");
 
     var textOwner = document.createTextNode(owner);
-    var textTitle = document.createTextNode(issue.title);
-    var textDate = document.createTextNode(issue.date);
-    var textEmploy = document.createTextNode(issue.emp);
+    var textTitle = document.createTextNode(item.title);
+    var textDate = document.createTextNode(item.date);
+    var textEmploy = document.createTextNode(item.emp);
+    var textType = document.createTextNode(GetItemType(item.itemType));
     var textButton;
-    if(issue.open){
-        textButton = '<a href="issue.html?Id='+issue.id+'"  class="btn btn-primary" role="button">Open Issue</a>';
+    if(item.open){
+        textButton = '<a href="item.html?Id='+item.id+'"  class="btn btn-primary" role="button">Open Item</a>';
     }
     else{
-        textButton = '<a href="issue.html?Id='+issue.id+'"  class="btn btn-primary disabled" role="button">Open Issue</a>';
+        textButton = '<a href="item.html?Id='+item.id+'"  class="btn btn-primary disabled" role="button">Open Item</a>';
     }
     
     var textDescrip;
-    if(issue.description === null || issue.description === undefined){
+    if(item.description === null || item.description === undefined){
         textDescrip = document.createTextNode('');
     }
     else{
-        textDescrip = document.createTextNode(issue.description);
+        textDescrip = document.createTextNode(item.description);
     }
 
     var textStatus;
-    if(issue.status=== null || issue.status === undefined){
+    if(item.status=== null || item.status === undefined){
         textStatus = document.createTextNode('Resolved');
     }
     else{
-        textStatus = document.createTextNode(issue.status);
+        textStatus = document.createTextNode(item.status);
     }
 
     var textCreator;
-    if(issue.inputer=== null || issue.inputer === undefined){
+    if(item.inputer=== null || item.inputer === undefined){
         textCreator = document.createTextNode('');
     }
     else{
-        textCreator = document.createTextNode(issue.inputer);
+        textCreator = document.createTextNode(item.inputer);
     }
  
     cellOwner.appendChild(textOwner);
@@ -254,8 +263,10 @@ function AddDataToRowToTable(issue) {
     cellEmploy.appendChild(textEmploy);
     cellStatus.appendChild(textStatus);
     cellCreator.appendChild(textCreator);
+    cellType.appendChild(textType);
     cellButton.innerHTML = textButton;
     row.appendChild(cellOwner);
+    row.appendChild(cellType);
     row.appendChild(cellTitle);
     row.appendChild(cellStatus);
     row.appendChild(cellDescrip);
@@ -266,9 +277,14 @@ function AddDataToRowToTable(issue) {
     tBodyElem.appendChild(row); 
 }
 
-function AddDataToIssuesRecords(issues){
+function GetItemType(itemTypeId){
+    var type = itemTypes.find(x => x.itemTypeId === itemTypeId);    
+    return type.itemType;
+}
+
+function AddDataToItemssRecords(items){
    var startingCount = 30;
-    for (let i = 0; i < issues.length; i++) {
+    for (let i = 0; i < items.length; i++) {
 
         var alterDate = startingCount + i;
         if(i > 7){
@@ -277,8 +293,8 @@ function AddDataToIssuesRecords(issues){
         var today = new Date();    
         today.setDate(today.getDate() + alterDate);
         var date = FormatDate(today);
-        issues[i].date = date;    
-        issues[i].dateObject = today;    
+        items[i].date = date;    
+        items[i].dateObject = today;    
     }   
 }
 

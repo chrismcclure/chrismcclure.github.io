@@ -4,6 +4,7 @@ var directReportKey = 'directReports';
 var white = 'white';
 var black = 'black';
 var grey = '#E8E8E8';
+var graphAreaUnselecteColor = '#DCDCDC';
 var maxIdKey = 'MaxId';
 var maxIdFromFileKey = 'MaxIdFromFile';
 var selectedItem = null;
@@ -19,11 +20,12 @@ var offsetY = canvasOffset.top + window.scrollY;
 var startX;
 var startY;
 var csvFilePath = 'files/default.csv';
-var issuesFile = 'files/issues.csv';
+var itemsFile = 'files/items.csv';
+var itemsTypesFile = 'files/itemType.csv';
 var nodes;
-var issues;
-var originalIssues = [];
-var issuesOnScreen = [];
+var items;
+var originalitems = [];
+var itemsOnScreen = [];
 var overviewNode;
 var buttonColorBlue = '#428BCA';
 var buttonColorGreen = '#5CB85C';
@@ -36,6 +38,32 @@ var originalViewNodes = [];
 var images = [];
 var levelB = false;
 var levelBTempNodes = [];
+var levelC = false;
+var levelCTempNodes = [];
+var levelD = false;
+var LevelDItems = [];
+var itemTypes = [];
+var showOnlyFeaturedLeader;
+var itemsPerPerson = [];
+var TempItemsPerPerson = [];
+//Manage the state of the graphs
+var policyElement;
+var policyClicked = false;
+var issuesElement;
+var issuesClicked = false;
+var resolvedElement;
+var resolvedClicked = false;
+var unresolvedElement;
+var unresolvedClicked = false;
+var praiseElement;
+var praiseClicked = false;
+var leaderElement;
+var leaderClicked = false;
+var associateElement;
+var associateClicked = false;
+var viewFullTable = false;
+var topForLegend = 465;
+
 
 ///Parse the files
 Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
@@ -51,41 +79,117 @@ Papa.parse(csvFilePath + "?_=" + (new Date).getTime(), {
                 nodes[i].height = 70;
             }
             SetUserLevel();
-            SetHomepageDetails();
-            tempNewNodes = [];
-            //tempNewNodes.push(nodes[0]);
-            GetChild(nodes[0], 1);
-            nodes = tempNewNodes;
-            StoreDirectReports();
-            SetDefaultLayout();   
-            loadIssues();        
-            if(!levelB){              
-                draw(false);
-            }           
+            if (!levelD) {
+                SetHomepageDetails();
+                tempNewNodes = [];
+                //tempNewNodes.push(nodes[0]);
+                GetChild(nodes[0], 1);
+                nodes = tempNewNodes;
+                StoreDirectReports();
+                SetDefaultLayout();
+            }
+            else{
+                console.log('leveld ');
+            }
+            Papa.parse(itemsTypesFile + "?_=" + (new Date).getTime(), {
+                header: true,
+                download: true,
+                dynamicTyping: true,
+                complete: function (results) {
+                    itemTypes = results.data;
+                    loaditems();
+                }
+            });
         }
         originalViewNodes = nodes;
     }
 });
 
-function loadIssues() {
-    Papa.parse(issuesFile + "?_=" + (new Date).getTime(), {
+function loaditems() {
+    Papa.parse(itemsFile + "?_=" + (new Date).getTime(), {
         header: true,
         download: true,
         dynamicTyping: true,
         complete: function (results) {
-            issues = results.data;
-            originalIssues = results.data;
-            PullFromLocalStorage();
-            AddDataToIssuesRecords(issues);
-            issues = issues.sort((a, b) => a.owner - b.owner);
-            AddDataToTable(issues);
-            UpdateTableRows();
-            AddHighestNumberToLocalStorage();
-            if (levelB){
-                FilterToLevelB();
-            }        
+            items = results.data;
+            originalitems = results.data;
+                
+            if(levelD){
+                console.log('level d 2');
+                FilterToLevelD();
+                LoadProgressBars();
+            }else{
+                PullFromLocalStorage();  
+                AddDataToitemsRecords(items);
+                items = items.sort((a, b) => a.owner - b.owner);
+                AddDataToTable(items);
+                UpdateTableRows();        
+                AddHighestNumberToLocalStorage();
+                UpdateItemCountPerPerson();   
+                if (levelB){
+                    FilterToLevelB();
+                }  
+                else if( levelC){
+                    FilterToLevelC();
+                }  
+                else{
+                    draw(false);
+                }
+                LoadProgressBars()   
+            }
+
+           
         }
     });
+}
+
+function UpdateItemCountPerPerson(){
+    for (let index = 0; index < itemsPerPerson.length; index++) {
+        var user = itemsPerPerson[index];
+        var personItems = items.filter( x => x.owner === user.Id);
+        itemsPerPerson[index].Total = personItems.length;
+        itemsPerPerson[index].Resolved = personItems.filter(x => x.status === 'Resolved').length;
+        itemsPerPerson[index].Unresolved = itemsPerPerson[index].Total - itemsPerPerson[index].Resolved;      
+        TempItemsPerPerson[index] = {
+            Id: user.Id,
+            Total: personItems.length,
+            Resolved : personItems.filter(x => x.status === 'Resolved').length,
+            Unresolved : itemsPerPerson[index].Total - itemsPerPerson[index].Resolved
+        }
+    }
+ 
+    for (let i = 0; i < itemsPerPerson.length; i++) {
+        var localItem = itemsPerPerson[i];
+        UpdateParent(localItem, i);         
+    }
+}
+
+function UpdateParent(localItem, index){
+    var children = itemsPerPerson.filter(x => x.ParentId === localItem.Id);  
+
+    if(children === null || children === undefined || children.length === 0){
+        return;
+    }  
+    else{      
+        var childResolved = 0;
+        var childUnresolved = 0;
+
+        for (let i = 0; i < children.length; i++) {
+           childResolved += children[i].Resolved;
+           childUnresolved += children[i].Unresolved;            
+        }
+                   
+        itemsPerPerson[index].Total = TempItemsPerPerson[index].Total +  childResolved + childUnresolved; 
+        itemsPerPerson[index].Resolved =   TempItemsPerPerson[index].Resolved +  childResolved; 
+        itemsPerPerson[index].Unresolved = TempItemsPerPerson[index].Unresolved  +  childUnresolved; 
+
+        var parentIndex = itemsPerPerson.findIndex(obj => obj.Id === localItem.ParentId);
+        if(parentIndex === undefined || parentIndex == null || itemsPerPerson[parentIndex] === undefined){
+            return;
+        }
+
+        UpdateParent(itemsPerPerson[parentIndex], parentIndex);
+    }
 }
 
 function SetUserLevel(){
@@ -95,23 +199,85 @@ function SetUserLevel(){
     if(level === 'B'){
         levelB = true;
     }
+    if(level === 'C'){
+        console.log('level c');
+        levelC = true;
+    }
+    if(level === 'D'){
+        levelD = true;
+    }
 }
 
-function FilterToLevelB(){    
-        levelB = true;
-        levelBTempNodes = nodes;       
-        console.log('load the page for mark');
-        var markNode =  nodes.find(o => o.Id === 5);
-        nodes = [];
-        FilterGetChild(markNode, 1);
-        SetHomepageDetails();
-        tempNewNodes = [];
-        GetChild(nodes[0], 1);        
-        nodes = tempNewNodes;       
-        originalViewNodes = tempNewNodes;
-        SetDefaultLayout();
-        UpdateTableRows();
-        draw(false);    
+function FilterToLevelB() {
+    levelB = true;
+    levelBTempNodes = nodes;
+    console.log('load the page for mark');
+    var markNode = nodes.find(o => o.Id === 5);
+    nodes = [];
+    FilterGetChild(markNode, 1);
+    SetHomepageDetails();
+    tempNewNodes = [];
+    GetChild(nodes[0], 1);
+    nodes = tempNewNodes;
+    originalViewNodes = tempNewNodes;
+    SetDefaultLayout();
+    UpdateTableRows();
+    draw(false);
+}
+
+function FilterToLevelC(){    
+
+    levelC = true;
+    levelCTempNodes = nodes;  
+    viewFullTable = false;
+    ToggleFullTable();     
+    console.log('load the page for laurie');
+    var laurieNode = nodes.find(o => o.Id === 6);
+    nodes = [];
+    FilterGetChild(laurieNode, 1);
+    HideButton();
+    SetHomepageDetails();
+    //SetDefaultLayout();
+    UpdateTableRows();
+   // draw(false);    
+}
+
+function FilterToLevelD(){    
+    levelD = true;
+    viewFullTable = false;
+    console.log('here is the part');
+          
+    console.log('load the page for mark');
+    var jimNode = {
+        id : 100,
+        Name : 'Jim Wiggum',
+        itemOwner :' Laurie Gumble',       
+    }; 
+    nodes = [];
+    nodes.push(jimNode);   
+    HideButton();
+    SetHomepageDetails(jimNode);
+  
+    UpdateItemsForLevelD(jimNode);
+    ToggleFullTable();
+    //draw(false);    
+}
+
+function UpdateItemsForLevelD(node){ 
+    for (let index = 0; index < items.length; index++) {       
+        if(items[index].emp === node.Name){
+            itemsOnScreen.push(items[index]);
+            LevelDItems.push(items[index])         
+        }        
+    }
+    items = [];
+    items = LevelDItems;
+    AddDataToitemsRecords(items);
+}
+
+function HideButton(){
+    var buttonHolder = document.getElementById('buttons-toggle');   
+    buttonHolder.style.display = 'none';
 }
 
 function FilterGetChild(element, level) {
@@ -120,7 +286,6 @@ function FilterGetChild(element, level) {
     nodes.push(element);
     level++;
     var children = holder.filter(x => x.parent == element.Id);
-    console.log(children);
     if (children.length === 0) {
         console.log('there are no childred');
         return;
@@ -141,19 +306,19 @@ function PullFromLocalStorage() {
     var maxFileId = GetCurrentMaxFileId();
     if (maxId > maxFileId) {
         for (let index = maxFileId + 1; index < maxId + 1; index++) {
-            var issue = JSON.parse(localStorage.getItem(index));
-            var issuestoAdd = {};
-            issuestoAdd.id = issue.id;
-            issuestoAdd.title = issue.title;
-            issuestoAdd.owner = issue.owner;
-            issuestoAdd.emp = issue.emp;
-            issuestoAdd.description = issue.description;
-            issuestoAdd.type = issue.type;
-            issuestoAdd.visibility = issue.visibility;
-            issuestoAdd.leaders = issue.leaders;
-            issuestoAdd.open = false;
-            issuestoAdd.inputer = issue.inputer;
-            issues.push(issuestoAdd);
+            var item = JSON.parse(localStorage.getItem(index));
+            var itemstoAdd = {};
+            itemstoAdd.id = item.id;
+            itemstoAdd.title = item.title;
+            itemstoAdd.owner = item.owner;
+            itemstoAdd.emp = item.emp;
+            itemstoAdd.description = item.description;
+            itemstoAdd.type = item.type;
+            itemstoAdd.visibility = item.visibility;
+            itemstoAdd.leaders = item.leaders;
+            itemstoAdd.open = false;
+            itemstoAdd.inputer = item.inputer;
+            items.push(itemstoAdd);
         }
     }
     else {
@@ -168,9 +333,22 @@ clearButton.addEventListener('click', function (event) {
 });
 
 
+var selectedLeader = document.getElementById('mine-only');
+selectedLeader.checked = false;
+showOnlyFeaturedLeader = false;
+selectedLeader.addEventListener('change', (event) => {
+    if (event.target.checked) {
+        showOnlyFeaturedLeader = true;   
+    } else {  
+        showOnlyFeaturedLeader = false;
+    }
+    UpdateTableRows();
+    LoadProgressBars();
+  })
+
 function AddHighestNumberToLocalStorage() {
     var maxId = GetCurrentMaxId();
-    var highestNumber = Math.max.apply(Math, issues.map(function (o) { return o.id; }));
+    var highestNumber = Math.max.apply(Math, items.map(function (o) { return o.id; }));
     if (maxId === undefined || maxId === 'null' || maxId === 'NaN' || maxId == null) {
         localStorage.setItem(maxIdKey, highestNumber);
     }
@@ -196,49 +374,57 @@ function GetCurrentMaxFileId() {
     return parseInt(maxId);
 }
 
-function AddIssueToLocalStorage(issue) {
-    var currentId = JSON.stringify(localStorage.getItem(issues.id));
+function AdditemToLocalStorage(item) {
+    var currentId = JSON.stringify(localStorage.getItem(items.id));
     if (currentId !== 'null') {
 
     }
     else {
-        localStorage.setItem(issue.id, JSON.stringify(issue))
+        localStorage.setItem(item.id, JSON.stringify(item))
     }
 }
 
-function AddDataToTable(issues) {
-    issuesOnScreen = [];
-    var mainHolderDiv = document.getElementById("panel-holder-div");
-    mainHolderDiv.innerHTML = '';   
+function AddDataToTable(items) {
+    itemsOnScreen = [];
+    // var mainHolderDiv = document.getElementById("panel-holder-div");
+    // mainHolderDiv.innerHTML = '';   
     var tBodyElem = document.getElementById("table-data");
     tBodyElem.innerHTML = '';
     $('#myTable').dataTable().fnClearTable();  
-    issues = issues.sort((a, b) => a.owner - b.owner)
-    for (let i = 0; i < issues.length; i++) {
-        AddDataToRowToTable(issues[i]);
-        AddIssueToLocalStorage(issues[i]);
-        AddDataToMobilePanel(issues[i]);
+    items = items.sort((a, b) => a.owner - b.owner)
+    UpdateTableHeaders();
+    for (let i = 0; i < items.length; i++) {
+        AddDataToRowToTable(items[i]);
+        //AdditemToLocalStorage(items[i]);
+        //AddDataToMobilePanel(items[i]);
     }       
     $('#myTable').DataTable();
     //Update the date range
-    var dates = issuesOnScreen.sort((a, b) => b.dateObject - a.dateObject);
-    var outPut = "No issues";
+    var dates = itemsOnScreen.sort((a, b) => b.dateObject - a.dateObject);
+    var outPut = "No items";
     if (dates.length > 0) {
         outPut = FormatDate(dates[dates.length - 1].dateObject) + " to " + FormatDate(dates[0].dateObject);
     }
-    var dateRangeElem = document.getElementById('date-range');
-    dateRangeElem.innerHTML = outPut;
+    var dateStartRangeElem = document.getElementById('start-date');
+    dateStartRangeElem.value = FormatDatePicker(dates[dates.length - 1].dateObject);
+
+    var dateEndRangeElem = document.getElementById('end-date');
+    dateEndRangeElem.value = FormatDatePicker(dates[0].dateObject);
 }
 
 function UpdateTableTitle(node) {
     var titleSpan = document.getElementById('title-name');
-        titleSpan.innerText = node.Name;
-    //Need some way to get all the children then make sure they are included in the issues
+
+    if (node === null || node === undefined) {
+        node = overviewNode;
+    }
+    titleSpan.innerText = node.Name;
+    //Need some way to get all the children then make sure they are included in the items
 }
 
-function AddDataToMobilePanel(issue) {
-    var issueOwner = nodes.filter(x => x.Id == issue.owner);
-    if (issueOwner.length == 0) {
+function AddDataToMobilePanel(item) {
+    var itemOwner = nodes.filter(x => x.Id == item.owner);
+    if (itemOwner.length == 0) {
         return;
     }
     var mainHolderDiv = document.getElementById("panel-holder-div");
@@ -251,36 +437,36 @@ function AddDataToMobilePanel(issue) {
     var panelHeaderText = document.createElement("h3");
     panelHeaderText.classList.add("zero-top-margin");
     panelHeaderText.setAttribute("id", "panel-title");
-    panelHeaderText.innerText = issue.title;
+    panelHeaderText.innerText = item.title;
     panelHeaderDiv.appendChild(panelHeaderText);
     mainPanelDiv.appendChild(panelHeaderDiv);
     //put the rest here
     var panelBodyDiv = document.createElement("div");
     panelBodyDiv.classList.add("panel-body");
-    panelBodyDiv.appendChild(CreatePanelHolderDiv("Owner:", issueOwner[0].Name));
-    panelBodyDiv.appendChild(CreatePanelHolderDiv("Date:", issue.date));
+    panelBodyDiv.appendChild(CreatePanelHolderDiv("Owner:", itemOwner[0].Name));
+    panelBodyDiv.appendChild(CreatePanelHolderDiv("Date:", item.date));
 
     var statusToUse;
-    if (issue.status === null || issue.status === undefined) {
+    if (item.status === null || item.status === undefined) {
         statusToUse = "Resolved"
     }
     else {
-        statusToUse = issue.status;
+        statusToUse = item.status;
     }
 
     panelBodyDiv.appendChild(CreatePanelHolderDiv("Status:", statusToUse));
-    panelBodyDiv.appendChild(CreatePanelHolderDiv("Employee:", issue.emp));
+    panelBodyDiv.appendChild(CreatePanelHolderDiv("Employee:", item.emp));
 
     var buttonDiv = document.createElement("div");
     buttonDiv.classList.add("text-center");
 
     var button = document.createElement("a");   
     var buttonHtml = '';
-    if (issue.open) {
-        buttonHtml = '<a href="issue.html?Id=' + issue.id + '" class="btn btn-primary btn-lg more-more-margin-top">Open Issue</a>';
+    if (item.open) {
+        buttonHtml = '<a href="item.html?Id=' + item.id + '" class="btn btn-primary btn-lg more-more-margin-top">Open item</a>';
     }
     else {
-        buttonHtml = '<a class="btn btn-primary btn-lg disabled more-more-margin-top">Open Issue</a>';
+        buttonHtml = '<a class="btn btn-primary btn-lg disabled more-more-margin-top">Open item</a>';
         panelHeaderText.setAttribute("id", "panel-title");
     }
     button.innerHTML = buttonHtml;
@@ -308,14 +494,44 @@ function CreatePanelHolderDiv(textTitle, textValue) {
     return panelHolderDiv;
 }
 
-function AddDataToRowToTable(issue) {
-    var issueOwner = nodes.filter(x => x.Id == issue.owner);
-    if (issueOwner.length == 0) {
-        return;
+function UpdateTableHeaders(){
+    var tabeleHeader = document.getElementsByClassName('toggle-table');
+    for (let index = 0; index < tabeleHeader.length; index++) {
+
+        if(viewFullTable){
+            tabeleHeader[index].classList.remove('hide-on-load');
+            tabeleHeader[index].classList.add('table-cell-display');            
+        }else{
+            tabeleHeader[index].classList.remove('table-cell-display');
+            tabeleHeader[index].classList.add('hide-on-load');
+        }                
+    }    
+    var descriptionHeader = document.getElementById('wide-header');
+    if(viewFullTable){
+        descriptionHeader.classList.add('col-md-3');
+    }else{
+        descriptionHeader.classList.remove('col-md-3');
+    }    
+}
+
+function AddDataToRowToTable(item) {
+    var itemOwner = nodes.filter(x => x.Id == item.owner);
+    var owner;
+    if (itemOwner.length == 0) {
+
+        if(levelD){
+            itemOwner = overviewNode;
+            owner = "Laurie Gumble"
+        }else{
+            return;
+        }
+      
+    }else{
+        owner = itemOwner[0].Name;
     }
     //This array is cleared and updated in AddDateToTable  method
-    issuesOnScreen.push(issue);
-    var owner = issueOwner[0].Name;
+    itemsOnScreen.push(item);
+   
     var tBodyElem = document.getElementById("table-data");
     //If you want to add more. Make it an Array!
     var row = document.createElement("tr");
@@ -325,55 +541,125 @@ function AddDataToRowToTable(issue) {
     var cell4 = document.createElement("td");
     var cell5 = document.createElement("td");
     var cell6 = document.createElement("td");
+    var cell7 = document.createElement("td");
+
+    var discriptionCell = document.createElement("td");
+    var creatorCell = document.createElement("td");
+
+    var textDescrip;
+    if(item.description === null || item.description === undefined){
+        textDescrip = document.createTextNode('');
+    }
+    else{
+        textDescrip = document.createTextNode(item.description);
+    }
+
+
+    var textCreator;
+    if(item.inputer=== null || item.inputer === undefined){
+        textCreator = document.createTextNode('');
+    }
+    else{
+        textCreator = document.createTextNode(item.inputer);
+    }
+    
     var textnode1 = document.createTextNode(owner);
-    var textnode2 = document.createTextNode(issue.title);
-    var textnode3 = document.createTextNode(issue.date);
+    var textnode2 = document.createTextNode(item.title);
+    var textnode3 = document.createTextNode(item.date);
     var textnode4;
-    if (issue.status === null || issue.status === undefined) {
+    if (item.status === null || item.status === undefined) {
         textnode4 = document.createTextNode("Resolved");
     }
     else {
-        textnode4 = document.createTextNode(issue.status);
+        textnode4 = document.createTextNode(item.status);
     }
-    var textnode6 = document.createTextNode(issue.emp);
-
+    var textnode6 = document.createTextNode(item.emp);
+    var textnode7 = document.createTextNode(GetItemType(item.itemType));
     var buttonHtml = '';
-    if (issue.open) {
-        buttonHtml = '<a href="issue.html?Id=' + issue.id + '" class="btn btn-primary">Open Issue</a>';
+    if (item.open) {
+        buttonHtml = '<a href="item.html?Id=' + item.id + '" class="btn btn-primary">Open item</a>';
     }
     else {
-        buttonHtml = '<a class="btn btn-primary disabled">Open Issue</a>';
+        buttonHtml = '<a class="btn btn-primary disabled">Open item</a>';
     }
     var textnode5 = buttonHtml;
     cell1.appendChild(textnode1);
+    cell7.appendChild(textnode7);
+    cell4.appendChild(textnode4);
     cell2.appendChild(textnode2);
     cell3.appendChild(textnode3);
-    cell4.appendChild(textnode4);
+
     cell5.innerHTML = textnode5;
     cell6.appendChild(textnode6);
+    discriptionCell.appendChild(textDescrip);
+    if(viewFullTable){
+        discriptionCell.classList.remove('hide-on-load');
+        discriptionCell.classList.add('table-cell-display');
+        discriptionCell.classList.add('col-md-3');
+        creatorCell.classList.remove('hide-on-load');
+        creatorCell.classList.add('table-cell-display');
+    }else{
+        discriptionCell.classList.remove('table-cell-display');
+        discriptionCell.classList.remove('col-md-3');
+        discriptionCell.classList.add('hide-on-load');
+        creatorCell.classList.remove('table-cell-display');
+        creatorCell.classList.add('hide-on-load');
+    }
+   
+    creatorCell.appendChild(textCreator);
     row.appendChild(cell1);
-    row.appendChild(cell2);
-    row.appendChild(cell3);
+    row.appendChild(cell7);
     row.appendChild(cell4);
+    row.appendChild(cell2);
+    row.appendChild(discriptionCell);
+    row.appendChild(cell3);
+
+
     row.appendChild(cell6);
+    row.appendChild(creatorCell);
     row.appendChild(cell5);
+ 
+
+    // var tabeleHeader = document.getElementsByClassName('toggle-table');
+
+    // console.log(tabeleHeader);
+    // for (let index = 0; index < tabeleHeader.length; index++) {
+
+    //     if(viewFullTable){
+    //         tabeleHeader[index].classList.remove('hide-on-load');
+    //         tabeleHeader[index].classList.add('table-cell-display');            
+    //     }else{
+    //         tabeleHeader[index].classList.remove('table-cell-display');
+    //         tabeleHeader[index].classList.add('hide-on-load');
+    //     }                
+    // }
+
+    // var descriptionHeader = document.getElementById('wide-header');
+    // if(viewFullTable){
+    //     descriptionHeader.classList.add('col-md-3');
+    // }else{
+    //     descriptionHeader.classList.remove('col-md-3');
+    // }
+
+
     //tBodyElem.appendChild(row);
     $('#myTable').dataTable().fnAddData(row);
 }
 
-function AddDataToIssuesRecords(issues) {
-    var startingCount = 30;
-    for (let i = 0; i < issues.length; i++) {
+function GetItemType(itemTypeId){
+    var type = itemTypes.find(x => x.itemTypeId === itemTypeId);    
+    return type.itemType;
+}
 
-        var alterDate = startingCount + i;
-        if (i > 7) {
-            startingCount = startingCount - i;
-        }
+function AddDataToitemsRecords(items) {
+    var startingCount = 11;
+    for (let i = 0; i < items.length; i++) {
+        var randomNumer = Math.floor(Math.random() * startingCount);       
         var today = new Date();
-        today.setDate(today.getDate() + alterDate);
+        today.setDate(today.getDate() + randomNumer + 21);
         var date = FormatDate(today);
-        issues[i].date = date;
-        issues[i].dateObject = today;
+        items[i].date = date;
+        items[i].dateObject = today;
     }
 }
 
@@ -381,11 +667,39 @@ function FormatDate(date) {
     return date.getMonth() + '-' + date.getDate() + '-' + date.getFullYear().toString().substr(-2);
 }
 
+function FormatDatePicker(date) {
+
+    if(date.getMonth() < 10){
+        return date.getFullYear().toString()  + '-0' +  date.getMonth() + '-' + date.getDate();
+    }
+
+    return date.getFullYear().toString()  + '-' +  date.getMonth() + '-' + date.getDate();
+}
+
 //Button clicks
-var fullTableButton = document.getElementById('open-issue');
+var fullTableButton = document.getElementById('open-item');
 fullTableButton.addEventListener('click', function (event) {
-    window.open("issuessList.html?mainNode=" + overviewNode.Id, "_top");
+    ToggleFullTable();   
 });
+
+function ToggleFullTable()
+{
+    var canvasDiv = document.getElementById('parent');
+    var tableDiv = document.getElementById('table-holder');
+    if(!viewFullTable){
+        canvasDiv.style.display = 'none';
+        tableDiv.classList.remove('col-md-8');
+        tableDiv.classList.add('col-md-12');
+        viewFullTable = true;
+    }
+    else{
+        tableDiv.classList.remove('col-md-12');
+        tableDiv.classList.add('col-md-8');
+        canvasDiv.style.display = 'block';
+        viewFullTable = false;
+    }   
+    UpdateTableRows();
+}
 
 //setting up the click for canvas. 
 //Might have double declarations in here
@@ -411,19 +725,51 @@ function SetHomepageDetails(node) {
 }
 
 function UpdateTableRows() {
-    var tempIssuesHolder = [];
+    var tempitemsHolder = [];
     var tBodyElem = document.getElementById("table-data");
     tBodyElem.innerHTML = '';
     for (let index = 0; index < nodes.length; index++) {
-        var issuesPerUser = originalIssues.filter(x => x.owner == nodes[index].Id);
-        if (issuesPerUser.length > 0) {
-            for (let i = 0; i < issuesPerUser.length; i++) {
-                tempIssuesHolder.push(issuesPerUser[i]);
+        var itemsPerUser = originalitems.filter(x => x.owner == nodes[index].Id);
+        if (itemsPerUser.length > 0) {
+            for (let i = 0; i < itemsPerUser.length; i++) {
+                tempitemsHolder.push(itemsPerUser[i]);
             }
         }
     }
-    issue = tempIssuesHolder;
-    AddDataToTable(issues);
+
+    if(levelD){        
+        tempitemsHolder = LevelDItems;
+    }
+ 
+    if(showOnlyFeaturedLeader){        
+        items = tempitemsHolder.filter(x => x.owner == overviewNode.Id);
+    }
+    else if(policyClicked){
+        items = tempitemsHolder.filter(x => x.itemType == 3);
+    }  
+    else if(issuesClicked){
+        items = tempitemsHolder.filter(x => x.itemType == 1);
+    }  
+    else if(resolvedClicked){
+        items = tempitemsHolder.filter(x => x.status === 'Resolved');
+    }
+    else if(unresolvedClicked){
+        items = tempitemsHolder.filter(x => x.status !== 'Resolved');
+    }
+    else if(leaderClicked){
+        items = tempitemsHolder.filter(x => x.itemType == 4);
+    }
+    else if(associateClicked){
+        items = tempitemsHolder.filter(x => x.itemType == 5);
+    }
+    else if(praiseClicked){
+        items = tempitemsHolder.filter(x => x.itemType == 2);
+    }
+    else{
+        items = tempitemsHolder;
+    }
+    
+    AddDataToTable(items);
 }
 
 function UpdateNodesOnZoom(doubleClickedNode) {
@@ -436,11 +782,13 @@ function UpdateNodesOnZoom(doubleClickedNode) {
     SetDefaultLayout();
     UpdateTableRows();
     draw(false);
+    LoadProgressBars();
 }
 //Recursion
 function GetChild(element, level) {
     element.level = level;
     tempNewNodes.push(element);
+    UpdateItemCount(element);
     level++;
     var children = nodes.filter(x => x.parent == element.Id);
     if (children.length === 0) {
@@ -452,6 +800,16 @@ function GetChild(element, level) {
     }
 }
 
+function UpdateItemCount(element){
+        var newCount = {
+        Id : element.Id,
+        Resolved : 0,
+        Unresolved : 0,       
+        Total : 0,
+        ParentId : element.parent
+    }
+    itemsPerPerson.push(newCount);
+}
 
 function SetDefaultLayout() {
     var singleNodeBuffer = (canvas.width - nodes[0].width) / 2;
@@ -466,19 +824,23 @@ function SetDefaultLayout() {
         //Right now this will work, but if it gets big figure this out
         if (nodes[i].level === 1) {
             nodes[i].top = 30;           
-            nodes[i].left = singleNodeBuffer;         
+            nodes[i].left = singleNodeBuffer;    
+            topForLegend = 125;       
         }
 
         if (nodes[i].level === 2) {
             nodes[i].top = 140;
+            topForLegend = 235;  
         }
 
         if (nodes[i].level === 3) {
             nodes[i].top = 250;
+            topForLegend = 355;    
         }
 
         if (nodes[i].level === 4) {
-            nodes[i].top = 360;          
+            nodes[i].top = 360;   
+            topForLegend = 465;       
         }
     }
     //Honestly this kind of sucks, but works for the prototype
@@ -545,6 +907,9 @@ window.addEventListener('resize', function (event) {
 });
 
 function HandleResize(event){
+    if(levelD){
+        return;
+    }
     //event.preventDefault();
     canvas.width = parent.offsetWidth;
     canvas.height = parent.offsetHeight; 
@@ -657,11 +1022,17 @@ function PreviousButton(){
     SetDefaultLayout();
     UpdateTableRows();
     draw(false);
+    LoadProgressBars();
 }
 var homeButton = document.getElementById('home-view');
 homeButton.addEventListener('click', function(event){
 HomeButton();
 });
+
+function GetItems(id)
+{
+    return itemsPerPerson.find(x => x.Id === id);
+}
 
 function HomeButton(){
     nodes = originalViewNodes
@@ -672,6 +1043,7 @@ function HomeButton(){
     SetDefaultLayout();
     UpdateTableRows();
     draw(false);
+    LoadProgressBars();
 }
 
 ///The DRAWING METHOD!!!
@@ -696,8 +1068,7 @@ function draw() {
     // c.fillStyle = black;
     // var viewName = overviewNode.Name + " Organization View"
     // c.fillText(viewName, canvas.width / 3.2, 25)
-
-    var yOfLegend = 465;
+ 
     //Set the legend on the top left
     if(supersSmallScreen){
         c.font = "13px Segoe UI";
@@ -706,7 +1077,7 @@ function draw() {
     }
     
     //Green Circle
-    c.arc(170, yOfLegend, 12, 0, Math.PI * 2, false);
+    c.arc(270, topForLegend, 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = greenCircle;
     c.fill();
@@ -714,15 +1085,15 @@ function draw() {
     c.beginPath();
 
     //Red Circle
-    c.arc(15, yOfLegend, 12, 0, Math.PI * 2, false);
+    c.arc(115, topForLegend, 12, 0, Math.PI * 2, false);
     c.strokeStyle = black;
     c.fillStyle = redCircle;
     c.fill();
     c.stroke();
     c.beginPath();
     c.fillStyle = black;
-    c.fillText("Resolved Issues", 190, yOfLegend + 4)
-    c.fillText("Unresolved Issues", 35, yOfLegend + 4)
+    c.fillText("Resolved items", 290, topForLegend + 4)
+    c.fillText("Unresolved items", 135, topForLegend + 4)
     c.beginPath();
 
     //Create objects for the buttons
@@ -807,14 +1178,14 @@ function draw() {
         c.moveTo(nodes[i].x, nodes[i].y);
         var parent = nodes.find(o => o.Id === nodes[i].parent);
         c.lineTo(parent.x, parent.y);
-        if(nodes[i].issues > nodes[i].resolved){
+        var localItems = GetItems(nodes[i].Id);       
+        if(localItems.Unresolved > localItems.Resolved){
             c.strokeStyle = 'red';
         }else{
             c.strokeStyle = 'black';
         }      
         c.stroke();
     }
-
 
     //Draw the rectangles and circles
     for (i = 0; i < nodes.length; i++) {
@@ -828,22 +1199,22 @@ function draw() {
             c.fillStyle = white;
             c.fill();
         }else{
-
-                var resolved = tempRectangle.resolved;
-                var issues = tempRectangle.issues;
-                if(resolved > issues){
+                var localItems = GetItems(nodes[i].Id);   
+                var resolved = localItems.Resolved;
+                var unresolved = localItems.Unresolved;
+                if(resolved > unresolved){
                     c.fillStyle = "#76FC9D";
                    
                 }
-                if(issues === resolved){
+                if(unresolved === resolved){
                     c.fillStyle = "yellow";
                   
                 }
-                if(issues > resolved){
+                if(unresolved > resolved){
                     c.fillStyle = "#FFFF99";
                    
                 }
-                if(issues > (resolved * 2)){
+                if(unresolved > (resolved * 2)){
                     c.fillStyle = "#F08080";
                 }
                 c.fill();
@@ -854,7 +1225,7 @@ function draw() {
         //c.fillStyle = black;
         //c.stroke();
 
-        //Draw the red circle  otherwise known as issues
+        //Draw the red circle  otherwise known as items
         //c.moveTo(tempRectangle.x -40, tempRectangle.y + 10);
         c.beginPath();
         c.arc(tempRectangle.x -8, tempRectangle.y + 15, 12, 0, Math.PI * 2, false);
@@ -864,13 +1235,14 @@ function draw() {
         c.stroke();
         c.beginPath();
         c.fillStyle = black;
-        var issuesText = new String(tempRectangle.issues);
-        var issueResolvedY = tempRectangle.y + 20;
-        if (issuesText.length == 2) {
-            c.fillText(tempRectangle.issues, tempRectangle.x - 18, issueResolvedY)
+        var itemCount = itemsPerPerson.find(x => x.Id === tempRectangle.Id);
+        var itemsText = new String(itemCount.Unresolved);
+        var itemResolvedY = tempRectangle.y + 20;
+        if (itemsText.length == 2) {
+            c.fillText(itemsText, tempRectangle.x - 18, itemResolvedY)
         }
-        if (issuesText.length == 1) {
-            c.fillText(tempRectangle.issues, tempRectangle.x -13, issueResolvedY)
+        if (itemsText.length == 1) {
+            c.fillText(itemsText, tempRectangle.x -13, itemResolvedY)
         }
         c.beginPath();
 
@@ -886,12 +1258,12 @@ function draw() {
 
         //Draw the number
         c.fillStyle = black;
-        var resolvedText = new String(tempRectangle.resolved);
+        var resolvedText = new String(itemCount.Resolved);
         if (resolvedText.length == 2) {
-            c.fillText(tempRectangle.resolved, tempRectangle.x + 11, issueResolvedY)
+            c.fillText(resolvedText, tempRectangle.x + 11, itemResolvedY)
         }
         if (resolvedText.length == 1) {
-            c.fillText(tempRectangle.resolved, tempRectangle.x + 15, issueResolvedY)
+            c.fillText(resolvedText, tempRectangle.x + 15, itemResolvedY)
         }
         c.beginPath();
         c.fillStyle = 'black';
@@ -908,15 +1280,245 @@ function draw() {
         var image = new Image();
         var htmlImage = document.createElement("img");
         htmlImage.setAttribute("src", imageFilePath);
-        htmlImage.style = "position:absolute; left: " + (nodes[i].left + 20) + "px; top:" + (nodes[i].top + 119) + "px; height: 60px; width: 60px; border: 1px solid black;";
+        htmlImage.style = "position:absolute; left: " + (nodes[i].left + 20) + "px; top:" + (nodes[i].top + 4) + "px; height: 60px; width: 60px; border: 1px solid black;";
         parent.appendChild(htmlImage);
         image.src = imageFilePath;
         images.push(image);
     }  
 }
 
+//Progress bar stuff:
+function LoadProgressBars() {
+    //any numbers of variables here
+    var duration = 500;
+    var strokeWidth = 10;
+    var itemstoUse;
+    
+    if(showOnlyFeaturedLeader){
+        itemstoUse = itemsOnScreen.filter(x => x.owner == overviewNode.Id);
+    }
+    else if(policyClicked){
+        itemstoUse = itemsOnScreen.filter(x => x.itemType == 3);    
+    }
+    else if(issuesClicked){
+        itemstoUse = itemsOnScreen.filter(x => x.itemType == 1);
+    }
+    else if(resolvedClicked){
+        itemstoUse = itemsOnScreen.filter(x => x.status === 'Resolved');
+    }
+    else if(unresolvedClicked){
+        itemstoUse = itemsOnScreen.filter(x => x.status !== 'Resolved');
+    }
+    else if(leaderClicked){
+        itemstoUse = itemsOnScreen.filter(x => x.itemType == 4);
+    }
+    else if(associateClicked){
+        itemstoUse = itemsOnScreen.filter(x => x.itemType == 5);
+    }
+    else if(praiseClicked){
+        itemstoUse = itemsOnScreen.filter(x => x.itemType == 2);
+    }
+    else{
+        itemstoUse = itemsOnScreen;
+    }     
 
-// function loadAllImages(){
-//     var assetFolder = "assets/";
-//     var bettyFile = assetFolder + "Betty.PNG"
-// }
+
+    var total = 0;
+    var resolved = [];
+    var unresolved = [];
+    var assocaite = [];
+    var leader = [];
+    var policy = [];
+    var praise = [];
+    var issues = [];
+    if(itemstoUse === null || itemstoUse === undefined){
+        itemstoUse = [];
+    }else{
+         total = itemstoUse.length;    
+         resolved = itemstoUse.filter(x => x.status === 'Resolved');
+         unresolved = itemstoUse.filter(x => x.status !== 'Resolved');
+         assocaite = itemstoUse.filter(x => x.itemType === 5);
+         leader = itemstoUse.filter(x => x.itemType === 4);
+         policy = itemstoUse.filter(x => x.itemType === 3);
+         praise = itemstoUse.filter(x => x.itemType === 2);
+         issues = itemstoUse.filter(x => x.itemType === 1);
+    }
+
+    createCircle('Resolved', Divide(resolved,total), greenCircle);
+    createCircle('Unresolved', Divide(unresolved,total), redCircle);
+    createCircle('Issues', Divide(issues,total), '#FC9D76');
+    createCircle('Policies', Divide(policy, total), '#9D76FC');   
+    createCircle('Praise', Divide(praise, total), '#4974A5');  
+    createCircle('Leader', Divide(leader, total), '#FFFF00');  
+    createCircle('Associate', Divide(assocaite, total), '#FF00FF');  
+
+    var element = document.getElementById('TotalItems');
+    element.innerHTML = '';
+
+    //Total Circle
+    var circleTotalItems = new ProgressBar.Circle('#TotalItems', {
+        color: '#31B0D5',
+        duration: duration,
+        easing: 'easeInOut',
+        strokeWidth: strokeWidth,
+    });
+    circleTotalItems.setText(total);
+    circleTotalItems.text.style.color = black;
+    circleTotalItems.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+    circleTotalItems.text.style.fontSize = '5rem';    
+    circleTotalItems.animate(0);            
+}
+
+policyElement = document.getElementById('Policies');
+policyElement.addEventListener('click', function () {
+    var policyLabel = document.getElementById('policies-label');
+    var clicked = policyClicked;
+    ClearAllClicked();   
+    if(!clicked){
+        policyClicked = true;
+        policyLabel.style.fontWeight = 'bold';
+        policyLabel.style.fontSize = '20px';
+       
+    }
+    UpdateTableRows();
+    LoadProgressBars();
+});
+
+issuesElement = document.getElementById('Issues');
+issuesElement.addEventListener('click', function () {
+    var label = document.getElementById('issues-label');
+    var clicked = issuesClicked;
+    ClearAllClicked();
+    if(!clicked){      
+        issuesClicked = true;
+        label.style.fontWeight = 'bold';
+        label.style.fontSize = '20px';
+    }
+    UpdateTableRows();
+    LoadProgressBars();
+});
+
+resolvedElement = document.getElementById('Resolved');
+resolvedElement.addEventListener('click', function () {
+    var label = document.getElementById('resolved-label');
+    var clicked = resolvedClicked;
+    ClearAllClicked();
+    if(!clicked){      
+        resolvedClicked = true;
+        label.style.fontWeight = 'bold';
+        label.style.fontSize = '20px';
+    }
+    UpdateTableRows();
+    LoadProgressBars();
+});
+
+unresolvedElement = document.getElementById('Unresolved');
+unresolvedElement.addEventListener('click', function () {
+    var label = document.getElementById('unresolved-label');
+    var clicked = unresolvedClicked;
+    ClearAllClicked();
+    if(!clicked){      
+        unresolvedClicked = true;
+        label.style.fontWeight = 'bold';
+        label.style.fontSize = '20px';
+    }
+    UpdateTableRows();
+    LoadProgressBars();
+});
+
+praiseElement = document.getElementById('Praise');
+praiseElement.addEventListener('click', function () {
+    var label = document.getElementById('praise-label');
+    var clicked = praiseClicked;
+    ClearAllClicked();
+    if(!clicked){      
+        praiseClicked = true;
+        label.style.fontWeight = 'bold';
+        label.style.fontSize = '20px';
+    }
+    UpdateTableRows();
+    LoadProgressBars();
+});
+
+leaderElement = document.getElementById('Leader');
+leaderElement.addEventListener('click', function () {
+    var label = document.getElementById('leader-label');
+    var clicked = leaderClicked;
+    ClearAllClicked();
+    if(!clicked){      
+        leaderClicked = true;
+        label.style.fontWeight = 'bold';
+        label.style.fontSize = '20px';
+    }
+    UpdateTableRows();
+    LoadProgressBars();
+});
+
+associateElement = document.getElementById('Associate');
+associateElement.addEventListener('click', function () {
+    var label = document.getElementById('associate-label');
+    var clicked = associateClicked;
+    ClearAllClicked();
+    if(!clicked){      
+        associateClicked = true;
+        label.style.fontWeight = 'bold';
+        label.style.fontSize = '20px';
+    }
+    UpdateTableRows();
+    LoadProgressBars();
+});
+
+function ClearAllClicked(){
+    issuesClicked = false;
+    policyClicked = false;
+    resolvedClicked = false;
+    unresolvedClicked = false;
+    praiseClicked = false;
+    leaderClicked = false;
+    associateClicked = false;
+    var labels = [];
+    labels.push(document.getElementById('policies-label'));
+    labels.push(document.getElementById('issues-label'));
+    labels.push(document.getElementById('resolved-label'));
+    labels.push(document.getElementById('unresolved-label'));
+    labels.push(document.getElementById('praise-label'));
+    labels.push(document.getElementById('leader-label'));
+    labels.push(document.getElementById('associate-label'));
+    for (let i = 0; i < labels.length; i++) {
+        labels[i].style.fontWeight = 'normal';
+        labels[i].style.fontSize = '20px';        
+    }
+}
+
+function createCircle(id, percent, color) {
+    var element = document.getElementById(id);
+    element.innerHTML = '';
+
+    var duration = 500;
+    var strokeWidth = 10;
+
+    var circlePolicy = new ProgressBar.Circle('#' + id, {
+        color: color,
+        duration: duration,
+        easing: 'easeInOut',
+        strokeWidth: strokeWidth,
+    });
+    circlePolicy.setText(FormatPercent(percent));
+    circlePolicy.text.style.color = black;
+    circlePolicy.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+    circlePolicy.text.style.fontSize = '3rem';
+    circlePolicy.animate(percent);
+}
+
+function FormatPercent(rawNumber){
+   return Math.round(rawNumber * 100) + '%';    
+}
+
+function Divide(lowNumber, total){
+
+if(total === 0){
+    return 0;
+}
+
+    return lowNumber.length / total;
+}

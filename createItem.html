@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css?134315">
+    <link rel="stylesheet" type="text/css" href="style/main.css?13435">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -15,7 +15,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.2.0/papaparse.js"></script>
 
-    <title>Issues</title>
+    <title>Items</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -53,57 +53,47 @@
         <div class="row">
             <div class="col-md-3"></div>
             <div class="form-group  col-md-6 col-sm-12 ">
-                <h1 class="text-center zero-top-margin"><span id="Issue-Name">Create New Issue</span> </h1>
+                <h1 class="text-center zero-top-margin"><span id="Item-Name">Create New Item</span> </h1>
                 <div class="main-form">
-                    <p class="less-margin-bottom"><label for="issue-title" class="less-margin-bottom">Issue
+                    <p class="less-margin-bottom"><label for="Item-title" class="less-margin-bottom">Item
                             Type:</label> </p>
+                    <p class="margin-left less-margin-bottom"><label
+                            class="radio less-margin-bottom tiny-margin-top not-bold"><input type="radio"
+                                name="ItemType" id="general" value="leader">General</label> </p>
                     <p class="margin-left less-margin-top less-margin-bottom"><label
                             class="radio less-margin-bottom tiny-margin-top not-bold"><input type="radio"
-                                name="issueType" value="report" id="direct-report" checked>Direct Report</label></p>
+                                name="ItemType" value="report" id="issue" checked>Issue</label></p>
                     <p class="margin-left less-margin-bottom"><label
                             class="radio less-margin-bottom tiny-margin-top not-bold"><input type="radio"
-                                name="issueType" id="self" value="self">Self</label> </p>
+                                name="ItemType" id="policy" value="policy">Policy</label> </p>
                     <p class="margin-left less-margin-bottom"><label
                             class="radio less-margin-bottom tiny-margin-top not-bold"><input type="radio"
-                                name="issueType" id="employee" value="employee">Another Employee</label>
-                    <p class="margin-left less-margin-bottom"><label
-                            class="radio less-margin-bottom tiny-margin-top not-bold"><input type="radio"
-                                name="issueType" id="leader" value="leader">Leader</label> </p>
+                                name="ItemType" id="praise" value="praise">Praise</label>
+
                     <p></p>
-                    <label for="issue-title">Title:</label>
-                    <input type="text" class="form-control" id="issue-title" placeholder="Title of the issue">
-                    <label class="more-margin-top" for="issue-description">Description:</label>
-                    <textarea class="form-control" rows="5" id="issue-description"
-                        placeholder="Enter a breif description of the issue..."></textarea>
-                    <div id="list-holder" class="more-margin-top">
-                        <label for="employee-list">Employee Involved:</label>
-                        <input type="text" class="form-control" id="employee-list" list="employees"
+                    <label for="Item-title">Title:</label>
+                    <input type="text" class="form-control" id="Item-title" placeholder="Title of the item">
+                    <label class="more-margin-top" for="Item-description">Description:</label>
+                    <textarea class="form-control" rows="5" id="Item-description"
+                        placeholder="Enter a breif description of the item..."></textarea>                    
+                    <div class="more-margin-top">
+                        <label for="employee-list-tag">Tag Employee:</label>
+                        <input type="text" class="form-control" id="employee-list-tag" list="employees-to-tag"
                             placeholder="Select employee from dropdown">
-                        <datalist id="employees">
+                        <datalist id="employees-to-tag">
                         </datalist>
                     </div>
                     <p></p>
-
-                    <p class="checkbox-holder less-margin-bottom"><label for="visible">Leader To Notify:</label></p>
-                    <div class="checkbox-holder">
-                        <label class="not-bold"><input type="checkbox" name="leader" value="Austin Lovejoy"
-                                checked="true" class="leader-checkbox">Austin Lovejoy - Senior VP</label>
-                    </div>
-                    <div class="checkbox-holder">
-                        <label class="not-bold"><input type="checkbox" name="leader" value="Kevin Brockman"
-                                class="leader-checkbox">Kevin Brockman - President</label>
-                    </div>
-                    <p class="less-margin-bottom"><label for="visible">Issue Visibility:</label></p>
+                    <p class="less-margin-bottom"><label for="visible">Item Visibility:</label></p>
                     <label class="radio-inline"><input type="radio" name="visible" value="standard"
                             checked>Standard</label>
                     <label class="radio-inline"><input type="radio" name="visible" value="private">Private</label>
-                    <p class="text-center more-more-margin-top"> <button class="btn btn-success btn-lg text-center"
-                            id="create-issue-button">Create Issue</button></p>
+                    <p class="text-center more-more-margin-top"> <button class="btn btn-success btn-lg text-center">Create Item</button></p>
                 </div>
             </div>
         </div>
     </div>
-    <script src="javascript/createIssue.js"></script>
+    <script src="javascript/createItem.js"></script>
 </body>
 
 </html>

@@ -39,6 +39,10 @@
    vertical-align: top !important;
 }
 
+.regular-marging-bottom{
+   margin-bottom: 6px  !important;
+}
+
 .less-margin-bottom{
    margin-bottom: 0px !important;
 }
@@ -49,6 +53,10 @@
 
 .tiny-margin-top{
    margin-top: 6px !important;
+}
+
+.no-padding-right{
+   padding-right: 0px !important;
 }
 
 .no-margin{
@@ -71,6 +79,10 @@
    font-weight: 300 !important;
 }
 
+.margin-left-8{
+   margin-left: 8px;
+}
+
 .more-margin-top{
    margin-top: 6px;
 }
@@ -80,9 +92,12 @@
 }
 
 .margin-left{
-   margin-left: 16px;;
+   margin-left: 20px !important;
 }
 
+.display-inline{
+   display: inline;
+}
 .footer-div{
    border-top: 1px solid black;
    padding: 12px;
@@ -92,6 +107,29 @@
    border: 1px solid black;
 }
 
+#mine-only{
+   margin-top: 8px;
+   -ms-transform: scale(1.2); /* IE */
+   -moz-transform: scale(1.2); /* FF */
+   transform: scale(1.2);  
+}
+
+.checkbox-label{
+   font-size: 16px;
+}
+
+#myTable{
+   width: 100% !important;;
+}
+
+.hide-on-load{
+   display: none;
+}
+
+.table-cell-display{
+   display: table-cell;
+}
+
 /*Main Form Styling*/
 .main-form{
    border: 1px solid black;
@@ -99,6 +137,17 @@
    border-radius: 12px;
    background-color: #E9ECEF;
    margin-bottom: 24px;
+}
+
+.item-details-holder{
+   display: flex;
+   flex-direction: row;
+   justify-content:flex-start;
+   margin-top: 8px;
+}
+
+.item-holder{
+   width: 40%;
 }
 
 /*history elements*/
@@ -124,4 +173,48 @@
 
 .panel-content{
    font-size: 18px;
+}
+
+/*graph area on main page */
+.graph-holder{
+   height: 150px;  
+   margin-bottom: 8px;
+   padding-right: 4px;
+ 
+}
+
+.inside-graph-holder{
+   height: 100%;
+   border: 1px solid black;
+   border-radius: 8px;
+   background-color: #DCDCDC;
+   display: flex;
+   flex-direction: row;
+   justify-content:space-around;
+   padding: 6px;
+}
+
+.progres-holder{
+   height: 100px;
+   width: 100px;
+}
+
+.dashboard-label{
+   font-size: 20px;
+   text-align: center;
+}
+
+.info-holder{
+   text-align: center;
+   padding: 6px;
+   border: 1px solid black;
+   min-height: 150px !important;
+   border-radius: 8px;
+   background-color: #F8F8FF;
+   margin-left: 8px;
+}
+
+.picker-holder{
+   font-size: 14px !important;
+   text-align: center;
 }

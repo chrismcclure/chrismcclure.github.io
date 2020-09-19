@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css?1443555454">
+    <link rel="stylesheet" type="text/css" href="style/main.css?1465544">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -14,6 +14,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <script src="libs/papaparse.min.js"></script>
+
+    <script src="libs/progressbar.js"></script>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
 
@@ -44,9 +46,8 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="createIssue.html" class="zero-padding"><button
-                                class="btn btn-primary navbar-btn">Create
-                                Issue</button></a>
+                    <li><a href="createItem.html" class="zero-padding"><button class="btn btn-primary navbar-btn">Create
+                                Item</button></a>
                     </li>
                     <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </ul>
@@ -59,28 +60,94 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid">        
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-5 col-sm-12 col-lg-5 left-half" id="parent">
-                <div class="text-md-left text-center">
-                    <h1 class="zero-top-margin"><span id="title-name">Temp</span> Overview</h1>
-                    <h4>Issues Date Range: <span id="date-range"></span> </h4>
-                    <button class="btn btn-primary" id="home-view">All Nodes</button>
-                    <button class="btn btn-info" id="previous-view">Previous</button>
-                    <button class="btn btn-default hidden-sm hidden-xs" id="open-issue">Open FullTable</button>
+            <div class="col-lg-2">
+                <div class=" info-holder">
+                <h2 class="zero-top-margin less-margin-bottom"><span id="title-name"></span></h2>
+                    <!-- <p class="text-center zero-top-margin"><img class="head-image" id="image" height="100" width="100"/></p>   -->
+                    <div class="picker-holder">
+                        <h4 class="tiny-margin-top">Date Range</h4>
+                        <p>Start: <input type="date" id="start-date" name="trip-start" value="2018-07-22" min="2018-01-01"
+                                max="2028-12-31"></p>
+                        <p>End:<input type="date" id="end-date" name="trip-start" value="2018-07-22" min="2018-01-01"
+                                max="2028-12-31"></p>
+                    </div>
+                    </div>
+            </div>
+            <div class="col-lg-10 no-padding-right">
+                <div class="graph-holder col-lg-2">
+                    <div class="inside-graph-holder">
+                        <div>
+                            <div class="progres-holder" id="TotalItems"></div>
+                            <p class="dashboard-label">Total Items</p>
+                        </div>
+                    </div>
                 </div>
+                <div class="graph-holder col-lg-3">
+                    <div class="inside-graph-holder">
+                        <div>
+                            <div class="progres-holder" id="Unresolved"></div>
+                            <p class="dashboard-label" id="unresolved-label">Unresolved</p>
+                        </div>
+                        <div>
+                            <div class="progres-holder" id="Resolved"></div>
+                            <p class="dashboard-label" id="resolved-label">Resolved</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="graph-holder col-lg-7">
+                    <div class="inside-graph-holder">
+                        <div>
+                            <div class="progres-holder" id="Issues"></div>
+                            <p class="dashboard-label" id="issues-label">Issues</p>
+                        </div>
+                        <div>
+                            <div class="progres-holder" id="Policies"></div>
+                            <p class="dashboard-label" id="policies-label">Policies</p>
+                        </div>
+                        <div>
+                            <div class="progres-holder" id="Praise"></div>
+                            <p class="dashboard-label" id="praise-label">Praise</p>
+                        </div>
+                        <div>
+                            <div class="progres-holder" id="Leader"></div>
+                            <p class="dashboard-label" id="leader-label">Leader</p>
+                        </div>
+                        <div>
+                            <div class="progres-holder" id="Associate"></div>
+                            <p class="dashboard-label" id="associate-label">Associate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 col-sm-12 left-half" id="parent">
                 <span id="image-span"></span>
                 <Canvas id="myCanvas"></Canvas>
             </div>
-            <div class="col-md-7 col-sm-12 col-lg-7 hidden-xs">
-                <table id="myTable" class="table table-sm table-bordered table-responsive">
+            <div class="col-md-8 col-sm-12" id="table-holder">
+                <div class="regular-marging-bottom" id="buttons-toggle">
+                    <button class="btn btn-primary" id="home-view">All Leaders</button>
+                    <button class="btn btn-info" id="previous-view">Previous View</button>
+                    <button class="btn btn-default hidden-sm hidden-xs" id="open-item">Toggle FullTable</button>
+                    <p class="checkbox-label display-inline margin-left-8 " ><input type="checkbox" id="mine-only" value="false" /> Only
+                        show featured
+                        leader items</p>
+                </div>
+                <table id="myTable" class="table table-bordered table-responsive">
                     <thead class="theader-background-black white-text">
                         <tr>
-                            <th>Issue Owner</th>
-                            <th>Title</th>
-                            <th>Date</th>
+                            <th>Owner</th>
+                            <th>Type</th>
                             <th>Status</th>
+                            <th>Title</th>
+                            <th id="wide-header" class="hide-on-load toggle-table">Description</th>
+                            <th>Date</th>                  
                             <th>Employee</th>
+                            <th id="less-wide-header" class="hide-on-load toggle-table">Creator</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -88,18 +155,18 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-sm-12  hidden-sm hidden-md hidden-lg hidden-xl">
-                <h2 class="text-center zero-top-margin">Issues</h2>
+            <!-- <div class="col-sm-12  hidden-sm hidden-md hidden-lg hidden-xl">
+                <h2 class="text-center zero-top-margin">Items</h2>
                 <div id="panel-holder-div"></div>
-            </div>
+            </div> -->
         </div>
         <div class="row">
             <div class="col-sm-12 col-lg-12 text-right footer-div">
                 <button class="btn btn-warning" id="clear-storage">Clear Storage</button>
             </div>
         </div>
-        <script src="javascript/main.js?1356544"></script>
     </div>
+    <script src="javascript/main.js?1356544"></script>
 </body>
 
 </html>

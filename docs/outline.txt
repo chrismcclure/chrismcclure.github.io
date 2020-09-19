@@ -1,11 +1,19 @@
-Next round of add
-2) Demo pages for level 1
-3) Demo pages of for level 2
-4) Demo page for level 3
-5) Demo page for level 4
-6) Demo emails
+What do I need to do to get 1.1 version ready for show to Devon and Rory/Make Power point
 
-Done
-7) Pictures to the nodes
-1) colors for each node
-2) color of lines for each node
+Do the power point
+
+
+
+Deploy to git hub tomorrow
+
+Done:
+Get the main page to look regular
+Deleete the full list and clean up references. 
+Main page to have the full table as well toggle. 
+    Then for level D, hide all the stuff and just show the full table.
+    Update the item details to deal with type and make the middle look better
+    comment out the mobile stuff for now.  Let me get the program and vision going. Then I will go back to mobile.
+
+update create ITem to work with new item stuff
+
+Create a bunch of dummy items so Stacy has about 30 items

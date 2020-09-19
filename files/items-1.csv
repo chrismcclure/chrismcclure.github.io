@@ -1,4 +1,4 @@
-issueId,order,person,text,status
+itemId,order,person,text,status
 1,1,Stacy Bartman,Status changed from <strong>New</strong> to <strong>In-Progress</strong> 
 1,2,Stacy Bartman,Breifly discussed staffing with <strong>Tina Maggino</strong>.  To outline plan to fix this.
 1,3,Stacy Bartman, Met with <strong>Tina Maggino</strong> disscssed options for staffing including staffing agency. <strong>Tina Maggino</strong> will contact agency.
@@ -12,22 +12,22 @@ issueId,order,person,text,status
 4,4,Laurie Gumble, Email sent to <strong>Jim Wiggim</strong> for resolution confirmation
 4,4,Laurie Gumble, Status changed from <strong>In-Progress</strong> to <strong>Waiting for Resolution</strong>,Waiting for Resolution
 6,1,Shannon Sizlack,Status changed from <strong>New</strong> to <strong>In-Progress</strong> 
-6,2,Shannon Sizlack,Met with <strong>Mark Flanders</strong> and <strong>Rory Lovejoy</strong> to discuss incident.  
+6,2,Shannon Sizlack,Met with <strong>Mark Flanders</strong> and <strong>Beth Lisaton</strong> to discuss incident.  
 6,3,Shannon Sizlack,Setting up meeting to talk with the director of patient saftey.,In-Progress
-8,1,Laurie Gumble,Issue created by system. Employee was 11 minutes late for start of shift.
+8,1,Laurie Gumble,Item created by system. Employee was 11 minutes late for start of shift.
 8,2,Laurie Gumble,Status changed from <strong>New</strong> to <strong>In-Progress</strong> 
 8,3,Laurie Gumble,Employee <strong>Rory Lovejoy</strong> had car trouble and called to alert me he would be late. First time being late., 
 8,4,Laurie Gumble, Status changed from <strong>In-Progress</strong> to <strong>Waiting for Resolution</strong>,Waiting for Resolution
-10,1,Laurie Gumble,Issue created by system. Employee was 8 minutes late for start of shift.
+10,1,Laurie Gumble,Item created by system. Employee was 8 minutes late for start of shift.
 10,2,Laurie Gumble,Status changed from <strong>New</strong> to <strong>In-Progress</strong> 
 10,3,Laurie Gumble,Employee <strong>Jim Wiggum</strong> said his alarm didn't go off.  First time late.
 10,4,Laurie Gumble, Status changed from <strong>In-Progress</strong> to <strong>Waiting for Resolution</strong>,
 10,5,Laurie Gumble, <strong>Jim Wiggum</strong> changed status to <strong>Resolved</strong>,Resolved
-9,1,Laurie Gumble,Issue created by system. Employee was 6 minutes late for start of shift.
+9,1,Laurie Gumble,Item created by system. Employee was 6 minutes late for start of shift.
 9,2,Laurie Gumble,Status changed from <strong>New</strong> to <strong>In-Progress</strong> 
 9,3,Laurie Gumble,Employee <strong>Jim Wiggum</strong> was late a second time in a week.  Employee said traffic was bad.  Talked to him about the new policy and let him know what will happen if he continues to show up late.
 9,4,Laurie Gumble, Status changed from <strong>In-Progress</strong> to <strong>Waiting for Resolution</strong>,Waiting for Resolution
-11,1,Laurie Gumble,Issue created by system. Employee was 6 minutes late for start of shift.
+11,1,Laurie Gumble,Item created by system. Employee was 6 minutes late for start of shift.
 11,2,Laurie Gumble,Status changed from <strong>New</strong> to <strong>In-Progress</strong> 
 11,3,Laurie Gumble,Employee <strong>Audrey Skinner</strong> was late to start of night shift. Had issue with child care.  Called ahead letting evening tech know she would be late. First time being late.
 11,4,Laurie Gumble, Status changed from <strong>In-Progress</strong> to <strong>Waiting for Resolution</strong>,
@@ -39,4 +39,4 @@ issueId,order,person,text,status
 13,2,Laurie Gumble, ER patient called department and praised <strong>Jim Wiggim</strong> for how amazing he was during here shoulder imaging.  She had a dislocated shoulder and <strong>Jim Wiggim</strong> did a great job during the procedure.
 13,3,Laurie Gumble, During the staff meeting I called out <strong>Jim Wiggim</strong> for his great patient care.
 13,4,Laurie Gumble, Status changed from <strong>In-Progress</strong> to <strong>Resolved</strong>,Resolved
-14,4,Laurie Gumble, Issue Created,New
+14,4,Laurie Gumble, Item Created,New

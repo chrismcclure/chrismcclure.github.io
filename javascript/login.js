@@ -21,10 +21,10 @@ function OpenCorrectPage(){
     }
     if(levelC.checked){
         console.log("level C checked");
-        window.open("issuessList.html?mainNode=6", "_top");
+        window.open("index.html?level=C", "_top");
     }
     if(levelD.checked){
         console.log("level D checked")
-        window.open("issuessList.html?mainNode=100", "_top");
+        window.open("index.html?level=D", "_top");
     }
 }

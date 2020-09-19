@@ -1,8 +1,8 @@
-Id,Name,Title,LeftDivid,top,height,parent,issues,resolved,image
-1,Stacy Bartman,Vice President,2.6,60,60,0,25,22,Stacy.PNG
-2,John Homerton,Surgery Director,4,175,60,1,12,10,John.PNG
-3,Tina Maggino,Health Director,1.9,175,60,1,12,9,Tina.PNG
-4,Betty Margery,Surg Team Lead,4,300,60,2,0,6,Betty.PNG
-5,Mark Flanders,Rad Director,1.9,300,60,3,10,6,Mark.PNG
-6,Laurie Gumble,Diag Team Lead,8,425,60,5,8,1,Laurie.PNG
-7,Shannon Sizlack,C.T. Team Lead,1.8,425,60,5,2,5,Shannon.PNG
+Id,Name,Title,LeftDivid,top,height,parent,image
+1,Stacy Bartman,Vice President,2.6,60,60,0,Stacy.PNG
+2,John Homerton,Surgery Director,4,175,60,1,John.PNG
+3,Tina Maggino,Health Director,1.9,175,60,1,Tina.PNG
+4,Betty Margery,Surg Team Lead,4,300,60,2,Betty.PNG
+5,Mark Flanders,Rad Director,1.9,300,60,3,Mark.PNG
+6,Laurie Gumble,Diag Team Lead,8,425,60,5,Laurie.PNG
+7,Shannon Sizlack,C.T. Team Lead,1.8,425,60,5,Shannon.PNG

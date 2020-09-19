@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/main.css?134445315">
+    <link rel="stylesheet" type="text/css" href="style/main.css?1344445315">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -15,7 +15,7 @@
 
     <script src="libs/papaparse.min.js"></script>
 
-    <title>Issues</title>
+    <title>Items</title>
     <link rel="shortcut icon" href="assets/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -38,9 +38,9 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="createIssue.html" class="zero-padding"><button
+                    <li><a href="createItems.html" class="zero-padding"><button
                                 class="btn btn-primary navbar-btn">Create
-                                Issue</button></a>
+                                Items</button></a>
                     </li>
                     <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </ul>
@@ -57,17 +57,34 @@
         <div class="row">
             <div class="col-md-3"></div>
             <div class=" col-md-6 col-sm-12">
-                <h1 class="text-center zero-top-margin">Issue Details</span> </h1>
+                <h1 class="text-center zero-top-margin">Item Details</span> </h1>
                 <div class="main-form">
-                    <h3 class="zero-top-margin"><span id="Issue-Name">Issue Name</span> </h3>
-                    <label for="issue-description">Description:</label>
-                    <textarea class="form-control" rows="3" id="issue-description"></textarea>
-                    <label for="create-by">Issues Creator:</label>
-                    <p> <span id="creator"></span></p>
-                    <label for="create-by">Issue Owner:</label>
-                    <p><span id="leader"></span></p>
-                    <label for="employee">Employee:</label>
-                    <p><span id="employee"></span></p>
+                    <h3 class="zero-top-margin"><span id="Item-Name">Item Name</span> </h3>
+                    <label for="item-description">Description:</label>
+                    <textarea class="form-control" rows="3" id="item-description"></textarea>
+                    <div class="item-details-holder">
+                        <div  class="item-holder">
+                            <label for="create-by">Item Creator:</label>
+                            <p> <span id="creator"></span></p>
+                        </div>
+                        <div  class="item-holder">
+                            <label for="create-by">Item Owner:</label>
+                            <p><span id="leader"></span></p>
+                        </div>
+                    </div>
+                    <div class="item-details-holder">
+                        <div class="item-holder">
+                            <label for="employee">Employee:</label>
+                            <p><span id="employee"></span></p>
+                        </div>
+                        <div  class="item-holder">
+                            <label for="create-by">Item Type:</label>
+                            <p><span id="type"></span></p>
+                        </div>
+                    </div>
+                   
+                   
+                  
                     <label for="new-information">New Information:</label>
                     <textarea class="form-control" rows="3" id="information"
                         placeholder="Input updates or new information..."></textarea>
@@ -82,15 +99,15 @@
                     </select>
                     <p class="more-more-margin-top text-center"><a href="index.html"
                             class="btn btn-warning btn-lg">Update
-                            Issue</a></p>
-                    <label for="history">Issue History:</label>
+                            Item</a></p>
+                    <label for="history">Item History:</label>
                     <div id="history">
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="javascript/issue.js?1335655544"></script>
+    <script src="javascript/item.js?1335655544"></script>
 </body>
 
 </html>
