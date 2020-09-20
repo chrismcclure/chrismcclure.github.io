@@ -647,6 +647,8 @@ function AddDataToRowToTable(item) {
 }
 
 function GetItemType(itemTypeId){
+    console.log('Id ' + itemTypeId);
+    console.log('Id ' + itemTypes);
     var type = itemTypes.find(x => x.itemTypeId === itemTypeId);    
     return type.itemType;
 }

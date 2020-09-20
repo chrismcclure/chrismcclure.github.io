@@ -1,10 +1,7 @@
 What do I need to do to get 1.1 version ready for show to Devon and Rory/Make Power point
 
-Do the power point
 
-
-
-Deploy to git hub tomorrow
+Fix shit on git hub tomorrow
 
 Done:
 Get the main page to look regular
@@ -16,4 +13,6 @@ Main page to have the full table as well toggle.
 
 update create ITem to work with new item stuff
 
-Create a bunch of dummy items so Stacy has about 30 items
+Create a bunch of dummy items so Stacy has about 30 items'
+
+Do the power point
