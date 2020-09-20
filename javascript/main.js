@@ -650,6 +650,10 @@ function GetItemType(itemTypeId){
     console.log('Id ' + itemTypeId);
     console.log('Id ' + itemTypes);
     var type = itemTypes.find(x => x.itemTypeId === itemTypeId);    
+    if(type === undefined){
+        return "undefinded"
+    }
+
     return type.itemType;
 }
 
