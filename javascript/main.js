@@ -574,7 +574,7 @@ function AddDataToRowToTable(item) {
         textnode4 = document.createTextNode(item.status);
     }
     var textnode6 = document.createTextNode(item.emp);
-    var textnode7 = document.createTextNode(GetItemType(item.itemType));
+    var textnode7 = document.createTextNode(GetItemType(item.itemType, item));
     var buttonHtml = '';
     if (item.open) {
         buttonHtml = '<a href="item.html?Id=' + item.id + '" class="btn btn-primary">Open item</a>';
@@ -646,10 +646,11 @@ function AddDataToRowToTable(item) {
     $('#myTable').dataTable().fnAddData(row);
 }
 
-function GetItemType(itemTypeId){    
+function GetItemType(itemTypeId, item){    
     var type = itemTypes.find(x => x.itemTypeId === itemTypeId);    
     if(type === undefined){
         console.log('Id ' + itemTypeId);
+        console.log('Item ' + item);
         return "Policy";
     }
 
