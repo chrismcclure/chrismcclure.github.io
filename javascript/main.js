@@ -649,6 +649,7 @@ function AddDataToRowToTable(item) {
 function GetItemType(itemTypeId, item){    
     var type = itemTypes.find(x => x.itemTypeId === itemTypeId);    
     if(type === undefined){
+        //THIS  IS A BUG. LOOK INTO THIS MORE!!!!!
         console.log('Id ' + itemTypeId);
         console.log('Item ' + item.title);
         return "Policy";
