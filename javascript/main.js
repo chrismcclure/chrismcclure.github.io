@@ -646,12 +646,11 @@ function AddDataToRowToTable(item) {
     $('#myTable').dataTable().fnAddData(row);
 }
 
-function GetItemType(itemTypeId){
-    console.log('Id ' + itemTypeId);
-    console.log('Id ' + itemTypes);
+function GetItemType(itemTypeId){    
     var type = itemTypes.find(x => x.itemTypeId === itemTypeId);    
     if(type === undefined){
-        return "undefinded"
+        console.log('Id ' + itemTypeId);
+        return "Policy";
     }
 
     return type.itemType;
